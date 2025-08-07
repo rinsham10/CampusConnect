@@ -1,12 +1,227 @@
 <!-- users/templates/users/register.html -->
-{% extends "users/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Portal - Register</title>
+    <style>
+        :root {
+            /* Consistent professional/academic color scheme */
+            --primary-color: #2962FF; /* Strong blue */
+            --secondary-color: #0D47A1;  /* Darker blue */
+            --background-color: #f0f2f5;
+            --error-color: #e53935;
+            --success-color: #4CAF50; /* Green for success */
+            --text-color: #333333;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-{% block content %}
-    <h2>Create Your Account</h2>
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
-{% endblock %}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .tagline {
+            color: var(--text-color);
+            font-size: 16px;
+            margin: 0 0 30px 0;
+            text-align: center;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        /* Style the Django-rendered input */
+        .input-group input {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.2);
+            outline: none;
+        }
+
+        .error-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+            color: var(--error-color);
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .form-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-color);
+        }
+
+        .form-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Create Your Account</h1>
+        <p class="tagline">Join the platform and find your future career.</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="formProgress"></div>
+        </div>
+
+        <form method="post" id="registerForm" novalidate>
+            {% csrf_token %}
+
+            <!-- Django's form errors (for non-field errors like password mismatch) -->
+            {% if form.non_field_errors %}
+                <div class="error-list">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="input-group">
+                {{ form.full_name.label_tag }}
+                {{ form.full_name }}
+                {{ form.full_name.errors }}
+            </div>
+
+            <div class="input-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="input-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="input-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+
+            <div class="input-group">
+                {{ form.confirm_password.label_tag }}
+                {{ form.confirm_password }}
+                {{ form.confirm_password.errors }}
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">Create Account</button>
+        </form>
+
+        <p class="form-link">
+            Already Registered? <a href="{% url 'login' %}">Login Here</a>
+        </p>
+
+    </div>
+
+    <script>
+        // This script is for visual flair like the progress bar.
+        // The real, secure validation is handled by Django on the backend.
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+            const progressBar = document.getElementById('formProgress');
+
+            function updateProgress() {
+                let filledInputs = 0;
+                inputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        filledInputs++;
+                    }
+                });
+                const progress = Math.round((filledInputs / inputs.length) * 100);
+                progressBar.style.width = progress + '%';
+            }
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+            });
+            
+            updateProgress(); // Initial check
+        });
+    </script>
+</body>
+</html>
