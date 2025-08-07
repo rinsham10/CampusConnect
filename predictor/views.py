@@ -11,7 +11,16 @@ def predict_view(request):
             ssc_p = float(request.POST['ssc_p'])
             hsc_p = float(request.POST['hsc_p'])
             degree_p = float(request.POST['degree_p'])
-            workex = int(request.POST['workex'])  # Must be 0 or 1
+
+            # Convert "Yes"/"No" to 1/0
+            workex_input = request.POST['workex'].strip().lower()
+            if workex_input == 'yes':
+                workex = 1
+            elif workex_input == 'no':
+                workex = 0
+            else:
+                raise ValueError("Work experience must be 'Yes' or 'No'.")
+
             etest_p = float(request.POST['etest_p'])
             mba_p = float(request.POST['mba_p'])
 

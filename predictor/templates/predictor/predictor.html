@@ -9,12 +9,26 @@
     <h2>Enter Student Details</h2>
     <form method="post">
         {% csrf_token %}
-        <label>SSC %:</label><input type="text" name="ssc_p"><br>
-        <label>HSC %:</label><input type="text" name="hsc_p"><br>
-        <label>Degree %:</label><input type="text" name="degree_p"><br>
-        <label>Work Experience (1=Yes, 0=No):</label><input type="text" name="workex"><br>
-        <label>Employability Test %:</label><input type="text" name="etest_p"><br>
-        <label>MCA %:</label><input type="text" name="mba_p"><br><br>
+        <label>SSC %:</label>
+<input type="number" name="ssc_p" step="0.01" min="1" max="100" required><br>
+
+<label>HSC %:</label>
+<input type="number" name="hsc_p" step="0.01" min="1" max="100" required><br>
+
+<label>Degree %:</label>
+<input type="number" name="degree_p" step="0.01" min="1" max="100" required><br>
+
+<label>Employability Test %:</label>
+<input type="number" name="etest_p" step="0.01" min="1" max="100" required><br>
+
+<label>MCA %:</label>
+<input type="number" name="mba_p" step="0.01" min="1" max="100" required><br>
+<label>Work Experience:</label>
+<select name="workex" required>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+</select><br>
+
         <input type="submit" value="Predict">
     </form>
 
