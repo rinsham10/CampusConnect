@@ -38,7 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'predictor',
+    'users',
 ]
+
+# Tell Django to use your custom user model
+AUTH_USER_MODEL = 'users.CustomUser'
+
+# Add these lines at the bottom for easy redirects
+LOGIN_URL = 'login' # Name of the login URL pattern
+LOGIN_REDIRECT_URL = 'dashboard' # Where to go after a successful login (will be handled by our view)
+LOGOUT_REDIRECT_URL = 'login' # Where to go after logging out
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

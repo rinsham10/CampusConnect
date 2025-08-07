@@ -1,61 +1,107 @@
-/* predictor/static/predictor/styles.css */
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
+/* Global Reset */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-h2, h3 {
-    text-align: center;
-    color: #333;
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #e6f0ff, #f9fbfc); /* Soft blue-white gradient */
+    color: #1F2937; /* Charcoal Black */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
 }
 
+/* Container card */
 form {
-    background: white;
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    max-width: 480px;
+    width: 100%;
+    animation: fadeIn 0.6s ease-in-out;
 }
 
+/* Headings */
+h2 {
+    text-align: center;
+    color: #2F5D9F;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+/* Labels */
 label {
     display: block;
-    margin-top: 15px;
+    margin-bottom: 6px;
     font-weight: 600;
-    color: #444;
+    color: #1F2937;
 }
 
-input[type="text"] {
+/* Inputs and Selects */
+input[type="number"],
+select {
     width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    background-color: #F9FAFB;
     font-size: 15px;
-    box-sizing: border-box;
+    transition: 0.3s;
 }
 
+input[type="number"]:focus,
+select:focus {
+    border-color: #2F5D9F;
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(47, 93, 159, 0.1);
+}
+
+/* Submit button */
 input[type="submit"] {
-    margin-top: 25px;
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+    background-color: #2F5D9F;
     color: white;
-    font-size: 16px;
     border: none;
-    border-radius: 6px;
+    padding: 14px;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: 0.3s ease;
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #41A4FF;
 }
 
+/* Prediction result */
 h3 {
-    margin-top: 20px;
-    color: green;
+    margin-top: 30px;
+    text-align: center;
+    color: #10B981; /* Emerald Green */
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Smooth animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

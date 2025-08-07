@@ -1,0 +1,17 @@
+<!-- users/templates/users/student_dashboard.html -->
+{% extends "users/base.html" %}
+
+{% block content %}
+    <h1>Welcome to your Dashboard, {{ user.username }}!</h1>
+    <p>This is the student portal.</p>
+
+      <hr>
+    <h3>Quick Actions</h3>
+    <ul>
+        <li>
+            <!-- THIS IS THE LINE YOU ARE ADDING -->
+            <a href="{% url 'predict' %}">Check Your Placement Prediction</a>
+        </li>
+
+    <p><a href="{% url 'logout' %}">Logout</a></p>
+{% endblock %}

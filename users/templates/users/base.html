@@ -1,0 +1,26 @@
+<!-- users/templates/users/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Placement Portal</title>
+    <style> /* Add some basic styling */
+        body { font-family: sans-serif; margin: 2em; }
+        .errorlist { color: red; }
+        .messages { list-style: none; padding: 0; }
+        .messages .success { color: green; border: 1px solid green; padding: 10px; margin-bottom: 1em; }
+        .messages .error { color: red; border: 1px solid red; padding: 10px; margin-bottom: 1em; }
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
