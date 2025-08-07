@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Placement Prediction</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'predictor/predictor.css' %}">
+</head>
+<body>
+    <h2>Enter Student Details</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>SSC %:</label><input type="text" name="ssc_p"><br>
+        <label>HSC %:</label><input type="text" name="hsc_p"><br>
+        <label>Degree %:</label><input type="text" name="degree_p"><br>
+        <label>Work Experience (1=Yes, 0=No):</label><input type="text" name="workex"><br>
+        <label>Employability Test %:</label><input type="text" name="etest_p"><br>
+        <label>MCA %:</label><input type="text" name="mba_p"><br><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if result %}
+        <h3>Prediction: {{ result }}</h3>
+    {% endif %}
+</body>
+</html>
