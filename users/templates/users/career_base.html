@@ -9,16 +9,23 @@
             <span class="logo-text">{{ user.username }}</span>
             <div class="platform-text">Career Platform</div>
         </div>
-        <ul class="nav flex-column">
-            <!-- Note how we check the active page -->
-            <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'job-list' %}active{% endif %}" href="{% url 'job-list' %}"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'resume-management' %}"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
-            <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'my-applications' %}active{% endif %}" href="{% url 'my-applications' %}"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell nav-icon"></i> Notifications</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'predict' %}"><i class="fas fa-wand-magic-sparkles nav-icon"></i> Placement Prediction</a></li>
-            <li class="nav-item mt-4"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt nav-icon"></i> Logout</a></li>
-        </ul>
+        <!-- This is the NEW, correct block -->
+<ul class="nav flex-column">
+    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'job-list' %}active{% endif %}" href="{% url 'job-list' %}"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'resume-management' %}active{% endif %}" href="{% url 'resume-management' %}"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'my-applications' %}active{% endif %}" href="{% url 'my-applications' %}"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
+    <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell nav-icon"></i> Notifications</a></li>
+    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'predict' %}active{% endif %}" href="{% url 'predict' %}"><i class="fas fa-wand-magic-sparkles nav-icon"></i> Placement Prediction</a></li>
+</ul>
+
+<!-- This is the separator -->
+<hr class="my-3">
+
+<!-- The Logout link is now in its own, separate list -->
+<ul class="nav flex-column">
+    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt nav-icon"></i> Logout</a></li>
+</ul>
 </nav>
 
 <!-- Main Content Area -->

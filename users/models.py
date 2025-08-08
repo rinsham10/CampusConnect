@@ -1,4 +1,5 @@
 # users/models.py
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -91,6 +92,9 @@ class StudentApplication(models.Model):
         ('Rejected', 'Rejected'),
         ('Accepted', 'Accepted'),
     ]
+    
+    # THIS LINE IS THE CRITICAL ONE. IT MUST EXIST.
+    resume = models.ForeignKey('Resume', on_delete=models.SET_NULL, null=True, blank=True)
     
     student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)

@@ -81,3 +81,47 @@ class ResumeUploadForm(forms.ModelForm):
         if file and not file.name.endswith('.pdf'):
             raise forms.ValidationError("Only PDF files are allowed.")
         return file
+
+
+class ApplicationForm(forms.Form):
+    # Field for selecting an existing resume. We'll populate this in the view.
+    existing_resume = forms.ModelChoiceField(
+        queryset=None, 
+        widget=forms.RadioSelect, 
+        required=False,
+        empty_label=None, # Removes the "---------" option
+        label="Choose from your saved resumes"
+    )
+
+    # Field for uploading a new resume
+    new_resume = forms.FileField(
+        required=False, 
+        label="Or upload a new resume (PDF only)"
+    )
+
+    def __init__(self, *args, **kwargs):
+        # We need the user to filter the queryset of existing resumes
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            # The queryset for the field is set here, filtered for the current user
+            self.fields['existing_resume'].queryset = Resume.objects.filter(student=user)
+
+    # This is the magic part: custom validation logic
+    def clean(self):
+        cleaned_data = super().clean()
+        existing_resume = cleaned_data.get('existing_resume')
+        new_resume = cleaned_data.get('new_resume')
+
+        if not existing_resume and not new_resume:
+            raise forms.ValidationError("You must either select an existing resume or upload a new one.")
+
+        if existing_resume and new_resume:
+            raise forms.ValidationError("Please either select an existing resume or upload a new one, not both.")
+        
+        # Validate that the new resume is a PDF
+        if new_resume and not new_resume.name.endswith('.pdf'):
+            self.add_error('new_resume', "Only PDF files are allowed.")
+            
+        return cleaned_data

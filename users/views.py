@@ -12,6 +12,7 @@ from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, ResumeUploadForm
+from .forms import ApplicationForm 
 
 def register_view(request):
     if request.method == 'POST':
@@ -150,18 +151,48 @@ def job_detail_view(request, job_id):
     has_applied = StudentApplication.objects.filter(student=request.user, job=job).exists()
 
     if request.method == 'POST':
+        # Only process the form if the user has not already applied
         if not has_applied:
-            StudentApplication.objects.create(student=request.user, job=job)
-            messages.success(request, f"You have successfully applied for the {job.title} position.")
+            # Pass the user to the form so it can validate correctly
+            form = ApplicationForm(request.POST, request.FILES, user=request.user)
+            
+            if form.is_valid():
+                chosen_resume = None
+                
+                # Check if the user uploaded a new resume
+                if form.cleaned_data.get('new_resume'):
+                    # Create and save the new Resume object
+                    new_resume_file = form.cleaned_data['new_resume']
+                    chosen_resume = Resume.objects.create(student=request.user, file=new_resume_file)
+                else:
+                    # Use the existing resume they selected
+                    chosen_resume = form.cleaned_data['existing_resume']
+
+                # Create the application, linking the chosen resume
+                StudentApplication.objects.create(
+                    student=request.user, 
+                    job=job,
+                    resume=chosen_resume
+                )
+                
+                messages.success(request, f"You have successfully applied for the {job.title} position.")
+                return redirect('job-detail', job_id=job.id)
+        else:
+            # This case prevents re-application if they somehow bypass the disabled button
+            messages.error(request, "You have already applied for this job.")
             return redirect('job-detail', job_id=job.id)
-    
+
+    else: # This is a GET request
+        # Create an empty form instance, passing the user to populate the resume list
+        form = ApplicationForm(user=request.user)
+
     context = {
         'job': job,
         'has_applied': has_applied,
-        'skills_list': job.get_skills_as_list() # Pass the skill list to the template
+        'skills_list': job.get_skills_as_list(),
+        'application_form': form # Pass the form to the template
     }
     return render(request, 'users/job_detail.html', context)
-
 
 # users/views.py
 
