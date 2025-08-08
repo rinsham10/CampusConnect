@@ -208,10 +208,10 @@
             Don't have an account? <a href="{% url 'register' %}">Register Here</a>
         </p>
 
-        {% if messages %}
+        {% if form.non_field_errors %}
             <div class="messages-container">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
                 {% endfor %}
             </div>
         {% endif %}
