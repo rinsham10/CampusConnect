@@ -13,6 +13,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, ResumeUploadForm
 from .forms import ApplicationForm 
+from django.utils import timezone
+from datetime import timedelta
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -59,7 +62,7 @@ def login_view(request):
 def student_dashboard_view(request):
     # Ensure this view is only for students
     if request.user.role != 'STUDENT':
-        return redirect('admin:index') # Or some other appropriate page
+        return redirect('admin:index')
 
     student = request.user
     
@@ -68,15 +71,18 @@ def student_dashboard_view(request):
     # 1. Total Applications by this student
     total_applications = StudentApplication.objects.filter(student=student).count()
     
-    # 2. Profile Completion (from the related Profile model)
-    # get_or_create is robust, handling cases where a profile might not exist for an old user
+    # 2. Profile Completion
     profile, created = Profile.objects.get_or_create(user=student)
     profile_completion = profile.profile_completion
     
-    # 3. Deadlines (count of jobs with deadlines in the next 7 days)
-    one_week_from_now = timezone.now().date() + timedelta(days=7)
+    # 3. *** THIS IS THE NEW DEADLINE LOGIC ***
+    # Get today's date and the date for one week from now
+    today = timezone.now().date()
+    one_week_from_now = today + timedelta(days=7)
+    
+    # Count jobs with a deadline between today and one week from now
     upcoming_deadlines_count = Job.objects.filter(
-        deadline__gte=timezone.now().date(), 
+        deadline__gte=today, 
         deadline__lte=one_week_from_now
     ).count()
     
@@ -90,7 +96,7 @@ def student_dashboard_view(request):
         'user': student,
         'total_applications': total_applications,
         'profile_completion': profile_completion,
-        'deadlines': upcoming_deadlines_count,
+        'deadlines': upcoming_deadlines_count, # Pass the new count to the template
         'recent_resumes': total_resumes,
         'recent_applications_list': recent_applications_list,
         'last_updated': timezone.now()
