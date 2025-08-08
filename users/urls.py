@@ -12,4 +12,5 @@ urlpatterns = [
     path('my-applications/', views.my_applications_view, name='my-applications'),
     path('resumes/', views.resume_management_view, name='resume-management'),
     path('resumes/<int:resume_id>/delete/', views.delete_resume_view, name='delete-resume'),
+    path('notifications/', views.notification_list_view, name='notification-list'),
 ]

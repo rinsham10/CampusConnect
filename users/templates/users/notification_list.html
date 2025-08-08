@@ -1,0 +1,28 @@
+<!-- users/templates/users/notification_list.html -->
+{% extends "users/career_base.html" %}
+
+{% block career_content %}
+<div class="career-main-content">
+    <div class="header">
+        <h1>Notifications</h1>
+        <p class="text-secondary">Recent updates and job alerts</p>
+    </div>
+
+    <div class="notification-list mt-4">
+        {% for notification in notifications %}
+            <a href="{% url 'job-detail' notification.job.id %}" class="notification-item">
+                <div class="notification-header">
+                    <h5 class="notification-title">New Job Posted</h5>
+                    <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
+                </div>
+                <p class="notification-body">{{ notification.message }}</p>
+                <small class="notification-footer">Click to view job details.</small>
+            </a>
+        {% empty %}
+            <div class="text-center p-5 bg-light rounded mt-4">
+                <p class="text-secondary mb-0">You have no new notifications.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

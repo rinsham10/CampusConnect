@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
-from .models import StudentApplication, Job, Resume, Profile
+from .models import StudentApplication, Job, Resume, Profile, Notification
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
@@ -254,3 +254,17 @@ def delete_resume_view(request, resume_id):
         resume.delete()      # Delete the object from the database
         messages.success(request, 'Your resume has been deleted.')
     return redirect('resume-management')
+
+@login_required
+def notification_list_view(request):
+    # Get all unread notifications for the current user
+    notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+    
+    context = {
+        'notifications': notifications
+    }
+    
+    # Optional: Mark notifications as read when the user visits the page
+    # notifications.update(is_read=True)
+    
+    return render(request, 'users/notification_list.html', context)

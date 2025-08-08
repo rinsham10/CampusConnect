@@ -1,0 +1,47 @@
+/* users/static/users/css/notifications.css */
+.notification-item {
+    padding: 1.5rem;
+    background-color: #fff;
+    border: 1px solid #e9e9f1;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    display: block; /* Make the whole area clickable */
+    text-decoration: none;
+    color: inherit;
+}
+
+.notification-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    border-color: #d0d7e5;
+    color: inherit;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #111;
+}
+
+.notification-time {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.notification-body {
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.notification-footer {
+    font-size: 0.9rem;
+    color: #4A46C6; /* Primary blue color */
+    font-weight: 500;
+}
