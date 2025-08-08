@@ -11,6 +11,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from .forms import RegistrationForm, LoginForm, ResumeUploadForm
 
 def register_view(request):
     if request.method == 'POST':
@@ -192,3 +193,33 @@ def logout_view(request):
     messages.info(request, "You have been logged out successfully.")
     return redirect('login')
 
+@login_required
+def resume_management_view(request):
+    """Handles displaying and uploading resumes."""
+    
+    form = ResumeUploadForm()
+    if request.method == 'POST':
+        form = ResumeUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            resume = form.save(commit=False)
+            resume.student = request.user
+            resume.save()
+            messages.success(request, 'Your resume has been uploaded successfully.')
+            return redirect('resume-management')
+
+    resumes = Resume.objects.filter(student=request.user).order_by('-uploaded_at')
+    context = {
+        'resumes': resumes,
+        'form': form
+    }
+    return render(request, 'users/resume_management.html', context)
+
+@login_required
+def delete_resume_view(request, resume_id):
+    """Handles deleting a resume."""
+    resume = get_object_or_404(Resume, id=resume_id, student=request.user) # Security check
+    if request.method == 'POST':
+        resume.file.delete() # Delete the file from storage
+        resume.delete()      # Delete the object from the database
+        messages.success(request, 'Your resume has been deleted.')
+    return redirect('resume-management')

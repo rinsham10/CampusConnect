@@ -13,15 +13,13 @@
             <!-- Note how we check the active page -->
             <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
             <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'job-list' %}active{% endif %}" href="{% url 'job-list' %}"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'resume-management' %}"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
             <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'my-applications' %}active{% endif %}" href="{% url 'my-applications' %}"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
             <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell nav-icon"></i> Notifications</a></li>
         </ul>
 
         <div class="quick-actions-header">Quick Actions</div>
         <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-plus-circle nav-icon"></i> Upload Resume</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'job-list' %}"><i class="fas fa-search nav-icon"></i> Find Jobs</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'predict' %}"><i class="fas fa-wand-magic-sparkles nav-icon"></i> Placement Prediction</a></li>
             <li class="nav-item mt-4"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt nav-icon"></i> Logout</a></li>
         </ul>

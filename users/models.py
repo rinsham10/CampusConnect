@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import os
 
 # --- Your Existing CustomUser Model (Unchanged) ---
 class CustomUser(AbstractUser):
@@ -79,6 +80,8 @@ class Job(models.Model):
         if self.required_skills:
             return [skill.strip() for skill in self.required_skills.split(',')]
         return []
+    
+
 # 3. Student Application Model
 # This links a student (CustomUser) to a Job they have applied for.
 class StudentApplication(models.Model):
@@ -106,3 +109,8 @@ class Resume(models.Model):
 
     def __str__(self):
         return f'Resume for {self.student.username}'
+
+    # ADD THIS HELPER METHOD
+    @property
+    def filename(self):
+        return os.path.basename(self.file.name)

@@ -1,0 +1,18 @@
+/* users/static/users/css/resume.css */
+.resume-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: #fff;
+    border: 1px solid #e9e9f1;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+.resume-info { display: flex; align-items: center; gap: 1rem; }
+.resume-info .file-icon { font-size: 1.5rem; color: #888; }
+.resume-info .filename { font-weight: 600; color: #111; }
+.resume-info .timestamp { font-size: 0.9rem; color: #888; }
+.resume-actions { display: flex; align-items: center; gap: 0.5rem; }
+.resume-actions .btn-delete { color: #888; }
+.resume-actions .btn-delete:hover { color: #dc3545; }

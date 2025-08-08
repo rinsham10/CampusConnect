@@ -1,0 +1,90 @@
+<!-- users/templates/users/resume_management.html -->
+{% extends "users/career_base.html" %}
+
+{% block career_content %}
+<div class="career-main-content">
+    <div class="header d-flex justify-content-between align-items-center">
+        <div>
+            <h1>Your Resumes</h1>
+            <p class="text-secondary">Manage and analyze your uploaded resumes</p>
+        </div>
+        <!-- Button to trigger the upload modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#uploadResumeModal">
+            <i class="fas fa-upload me-2"></i>Upload Resume
+        </button>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- List of Resumes -->
+    <div class="resume-list">
+        {% for resume in resumes %}
+        <div class="resume-item">
+            <div class="resume-info">
+                <i class="fas fa-file-pdf file-icon"></i>
+                <div>
+                    <div class="filename">{{ resume.filename }}</div>
+                    <div class="timestamp">Created: {{ resume.uploaded_at|date:"F j, Y \a\t g:i A" }}</div>
+                </div>
+            </div>
+            <div class="resume-actions">
+                <a href="{{ resume.file.url }}" target="_blank" class="btn btn-dark btn-sm">View Resume</a>
+                <!-- Delete Button triggers a confirmation modal -->
+                <button type="button" class="btn btn-light btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteResumeModal-{{ resume.id }}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal (one for each resume) -->
+        <div class="modal fade" id="deleteResumeModal-{{ resume.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete the resume "{{ resume.filename }}"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{% url 'delete-resume' resume.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <p class="text-center text-secondary mt-5">You have not uploaded any resumes yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Upload Resume Modal -->
+<div class="modal fade" id="uploadResumeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload a New Resume</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'resume-management' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_file" class="form-label">Select PDF File</label>
+                        {{ form.file }}
+                        {% if form.file.errors %}
+                            <div class="text-danger small mt-1">{{ form.file.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

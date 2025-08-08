@@ -1,55 +1,36 @@
-# users/forms.py
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser
+from .models import CustomUser, Resume
+from django.contrib.auth.forms import AuthenticationForm
 
 class RegistrationForm(forms.ModelForm):
-    # We define all fields here to control their widgets and labels
     full_name = forms.CharField(
         label='Full Name',
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter Full Name',
-            'id': 'full_name' # ID for JavaScript
-        })
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Full Name', 'id': 'full_name'})
     )
     username = forms.CharField(
         label='Username',
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter Username',
-            'id': 'username' # ID for JavaScript
-        })
+        widget=forms.TextInput(attrs={'placeholder': 'Enter Username', 'id': 'username'})
     )
     email = forms.EmailField(
         label='Email',
-        widget=forms.EmailInput(attrs={
-            'placeholder': 'Enter Email',
-            'id': 'email' # ID for JavaScript
-        })
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter Email', 'id': 'email'})
     )
     password = forms.CharField(
         label='Password',
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Create Password',
-            'id': 'password' # ID for JavaScript
-        }),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Create Password', 'id': 'password'}),
         required=True
     )
     confirm_password = forms.CharField(
         label='Confirm Password',
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Confirm Password',
-            'id': 'confirm_password' # ID for JavaScript
-        }),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password', 'id': 'confirm_password'}),
         required=True
     )
 
     class Meta:
         model = CustomUser
-        # The fields Django will save to the model
         fields = ['username', 'email']
 
-    # Your validation methods (clean_username, clean_email, clean) remain the same.
-    # They are crucial for secure, backend validation.
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if CustomUser.objects.filter(username=username).exists():
@@ -71,19 +52,32 @@ class RegistrationForm(forms.ModelForm):
             self.add_error('confirm_password', "Passwords do not match.")
         return cleaned_data
 
-# ... your LoginForm remains here ...
 
 class LoginForm(forms.Form):
-    # We add widgets to control the HTML attributes
     username = forms.CharField(widget=forms.TextInput(
-        attrs={
-            'placeholder': 'Username',
-            'id': 'username', # Match the ID from your example JS
-        }
+        attrs={'placeholder': 'Username', 'id': 'username'}
     ))
     password = forms.CharField(widget=forms.PasswordInput(
-        attrs={
-            'placeholder': 'Password',
-            'id': 'password', # Match the ID from your example JS
-        }
+        attrs={'placeholder': 'Password', 'id': 'password'}
     ))
+
+
+class ResumeUploadForm(forms.ModelForm):
+    class Meta:
+        model = Resume
+        fields = ['file']
+        labels = {
+            'file': 'Select PDF File',
+        }
+        widgets = {
+            'file': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf'
+            })
+        }
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file', False)
+        if file and not file.name.endswith('.pdf'):
+            raise forms.ValidationError("Only PDF files are allowed.")
+        return file

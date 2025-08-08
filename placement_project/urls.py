@@ -1,18 +1,16 @@
-# placement_project/urls.py
-
 from django.contrib import admin
-# This line is ESSENTIAL. It makes path() and include() available.
 from django.urls import path, include
 from django.shortcuts import redirect
+from django.conf import settings
+from django.conf.urls.static import static  # 👈 this is needed
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    # This now correctly uses the URL NAME 'login', not the path.
-    # Django will find its full path at '/accounts/login/'.
     path('', lambda request: redirect('login', permanent=False)),
-
-    # Include your other app URLs
     path('predictor/', include('predictor.urls')),
     path('accounts/', include('users.urls')),
 ]
+
+# ✅ Serve media files in development mode
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
