@@ -146,21 +146,18 @@ def job_list_view(request):
 @login_required
 def job_detail_view(request, job_id):
     job = get_object_or_404(Job, id=job_id)
-    
-    # Check if the student has already applied for this job
     has_applied = StudentApplication.objects.filter(student=request.user, job=job).exists()
 
     if request.method == 'POST':
-        # Prevent applying again if they already have
         if not has_applied:
             StudentApplication.objects.create(student=request.user, job=job)
             messages.success(request, f"You have successfully applied for the {job.title} position.")
-            # Redirect to the same page; the template will now show "Already Applied"
             return redirect('job-detail', job_id=job.id)
     
     context = {
         'job': job,
-        'has_applied': has_applied
+        'has_applied': has_applied,
+        'skills_list': job.get_skills_as_list() # Pass the skill list to the template
     }
     return render(request, 'users/job_detail.html', context)
 

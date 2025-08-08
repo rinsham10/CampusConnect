@@ -43,23 +43,42 @@ class Job(models.Model):
         INTERNSHIP = "Internship", "Internship"
         CONTRACT = "Contract", "Contract"
 
+    # Core Info
     title = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100, default="Work From Home (Remote)")
     job_type = models.CharField(max_length=20, choices=JobType.choices, default=JobType.FULL_TIME)
-    description = models.TextField(blank=True, null=True)
     
-    # New Salary Fields
+    # Detailed Description Fields
+    description = models.TextField(blank=True, null=True, help_text="A general overview of the job and company.")
+    key_responsibilities = models.TextField(blank=True, null=True, help_text="List the primary duties and responsibilities.")
+    minimum_qualifications = models.TextField(blank=True, null=True, help_text="List the essential qualifications and skills.")
+    
+    # Skills - stored as comma-separated values
+    required_skills = models.CharField(max_length=255, blank=True, null=True, help_text="Comma-separated list of skills (e.g., Python, Django, SQL)")
+    
+    # Sidebar Info
+    recommendation = models.TextField(blank=True, null=True, help_text="A short recommendation or highlight for the job.")
+    cgpa_requirement = models.CharField(max_length=50, blank=True, null=True, default="Not specified")
+    
+    # Salary & Dates
     salary_min = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     salary_max = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     currency = models.CharField(max_length=10, default="INR")
+    joining_date = models.DateField(blank=True, null=True)
+    application_opens = models.DateField(blank=True, null=True)
+    deadline = models.DateField(blank=True, null=True) # This is the Application Deadline
     
-    deadline = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} at {self.company}'
 
+    # A helper method to get skills as a list
+    def get_skills_as_list(self):
+        if self.required_skills:
+            return [skill.strip() for skill in self.required_skills.split(',')]
+        return []
 # 3. Student Application Model
 # This links a student (CustomUser) to a Job they have applied for.
 class StudentApplication(models.Model):

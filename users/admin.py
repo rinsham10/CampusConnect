@@ -18,18 +18,21 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ('title', 'company', 'description')
     list_filter = ('job_type', 'location')
     
-    # Organize the fields in the admin edit form
     fieldsets = (
-        (None, {
-            'fields': ('title', 'company', 'description')
+        ("Core Information", {
+            'fields': ('title', 'company', 'job_type', 'location')
         }),
-        ('Job Details', {
-            'fields': ('location', 'job_type', 'deadline')
+        ("Job Descriptions", {
+            'fields': ('description', 'key_responsibilities', 'minimum_qualifications', 'required_skills')
         }),
-        ('Salary Information', {
-            'fields': ('currency', 'salary_min', 'salary_max')
+        ("Sidebar Information", {
+            'fields': ('recommendation', 'cgpa_requirement')
+        }),
+        ("Salary & Dates", {
+            'fields': ('currency', 'salary_min', 'salary_max', 'joining_date', 'application_opens', 'deadline')
         }),
     )
+
 
 
 class StudentApplicationAdmin(admin.ModelAdmin):

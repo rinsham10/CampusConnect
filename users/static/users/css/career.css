@@ -105,7 +105,7 @@
 }
 
 .job-card-details li i {
-    color: #888;
+    color: var(--primary-color);
     width: 24px;
     font-size: 1rem;
     margin-right: 0.5rem;

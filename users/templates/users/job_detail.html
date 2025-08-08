@@ -1,38 +1,82 @@
 <!-- users/templates/users/job_detail.html -->
-{% extends "users/base.html" %}
+{% extends "users/career_base.html" %}
 
-{% block content %}
-<div class="container py-5">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3>{{ job.title }}</h3>
-            <a href="{% url 'job-list' %}" class="btn btn-secondary">← Back to All Jobs</a>
+{% block career_content %}
+<div class="container-fluid p-4">
+    <div class="row">
+        <!-- Left Column: Job Description -->
+        <div class="col-lg-8">
+            <div class="detail-main-content">
+                <div class="job-section">
+                    <h4><i class="far fa-star me-2"></i>Job Overview</h4>
+                    
+                    <h5 class="mt-4">Description</h5>
+                    <p>{{ job.description|linebreaksbr }}</p>
+                    
+                    <h5 class="mt-4">Key Responsibilities</h5>
+                    <p>{{ job.key_responsibilities|linebreaksbr }}</p>
+
+                    <h5 class="mt-4">Minimum Qualifications</h5>
+                    <p>{{ job.minimum_qualifications|linebreaksbr }}</p>
+                </div>
+
+                <div class="job-section">
+                    <h4>Required Skills</h4>
+                    <div>
+                        {% for skill in skills_list %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% empty %}
+                            <p>No specific skills listed.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <h5 class="card-title">{{ job.company }}</h5>
-            <p class="card-text text-secondary">
-                Deadline: {{ job.deadline|date:"F d, Y"|default:"Not specified" }}
-            </p>
-            <hr>
-            <h6>Job Description</h6>
-            <p>{{ job.description|linebreaks|default:"No description provided." }}</p>
 
-            <!-- Display messages from the view (e.g., success message) -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-success mt-4">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        <!-- Right Column: Sidebar Info -->
+        <div class="col-lg-4">
+            
+            <!-- THIS IS THE UPDATED SALARY CARD -->
+            <div class="sidebar-card">
+                <h5><i class="fas fa-wallet me-2"></i>Salary</h5>
+                {% if job.salary_min and job.salary_max %}
+                    <div class="value">{{ job.currency }} {{ job.salary_min|floatformat:0 }} - {{ job.salary_max|floatformat:0 }}</div>
+                    <p class="small text-secondary mt-1">Per Annum</p>
+                {% else %}
+                    <div class="value">Not Disclosed</div>
+                {% endif %}
+            </div>
+            
+            <div class="sidebar-card light-orange">
+                <h5>CGPA Requirement</h5>
+                <div class="value">{{ job.cgpa_requirement }}</div>
+            </div>
 
-            <!-- Application Button Logic -->
+            <div class="sidebar-card">
+                <h5><i class="far fa-calendar-alt me-2"></i>Important Dates</h5>
+                <div class="date-item">
+                    <span class="date-label">Joining Date</span>
+                    <span class="date-value">{{ job.joining_date|date:"j/n/Y"|default:"Not specified" }}</span>
+                </div>
+                <div class="date-item">
+                    <span class="date-label">Application Deadline</span>
+                    <span class="date-value">{{ job.deadline|date:"j/n/Y"|default:"Not specified" }}</span>
+                </div>
+                 <div class="date-item">
+                    <span class="date-label">Application Opens</span>
+                    <span class="date-value">{{ job.application_opens|date:"j/n/Y"|default:"Not specified" }}</span>
+                </div>
+            </div>
+
+            <!-- Application Button -->
             {% if has_applied %}
-                <button class="btn btn-success disabled w-100 mt-3">
+                <button class="btn btn-success disabled w-100 mt-3 p-2">
                     <i class="fas fa-check-circle"></i> Already Applied
                 </button>
             {% else %}
                 <form method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Apply Now</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3 p-2">Apply Now</button>
                 </form>
             {% endif %}
         </div>
