@@ -2,16 +2,93 @@
 {% extends "users/base.html" %}
 
 {% block content %}
-    <h1>Welcome to your Dashboard, {{ user.username }}!</h1>
-    <p>This is the student portal.</p>
+<!-- The <style> block has been correctly removed from here and placed in a static CSS file -->
 
-      <hr>
-    <h3>Quick Actions</h3>
-    <ul>
-        <li>
-            <!-- THIS IS THE LINE YOU ARE ADDING -->
-            <a href="{% url 'predict' %}">Check Your Placement Prediction</a>
-        </li>
+<!-- Sidebar -->
+<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+    <div class="position-sticky">
+        <div class="sidebar-header mb-4">
+            <span class="logo-text">Krupanidhi College <br>of Management</span>
+            <div class="platform-text">Career Platform</div>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell nav-icon"></i> Notifications</a></li>
+        </ul>
 
-    <p><a href="{% url 'logout' %}">Logout</a></p>
+        <div class="quick-actions-header">Quick Actions</div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-plus-circle nav-icon"></i> Upload Resume</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-search nav-icon"></i> Find Jobs</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'predict' %}"><i class="fas fa-wand-magic-sparkles nav-icon"></i> Placement Prediction</a></li>
+            <li class="nav-item mt-4"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt nav-icon"></i> Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="col-md-9 ms-sm-auto col-lg-10">
+    <div class="main-content">
+        <div class="top-bar mb-4">
+            <div>
+                <h2>Welcome back, {{ user.first_name|default:user.username }}</h2>
+                <p class="text-secondary">Here's your career preparation overview</p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="last-updated me-3"><i class="far fa-clock"></i> Last updated: {{ last_updated|date:"j/n/Y" }}</span>
+                <i class="far fa-bell me-3 fs-5"></i>
+                <div class="user-initials">{{ user.username|first|upper }}</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3"><div class="stat-card"><h3>{{ total_applications }}</h3><p>Total Applications</p></div></div>
+            <div class="col-md-3"><div class="stat-card"><h3>{{ profile_completion }}%</h3><p>Profile Completion</p></div></div>
+            <div class="col-md-3"><div class="stat-card"><h3>{{ deadlines }}</h3><p>Deadlines</p></div></div>
+            <div class="col-md-3"><div class="stat-card"><h3>{{ recent_resumes }}</h3><p>Recent Resumes</p></div></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="main-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="main-card-header mb-0"><i class="fas fa-user-check me-2"></i> Profile Completion</h5>
+                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill px-3 py-2">Excellent</span>
+                    </div>
+                    <p class="text-secondary mb-3">Complete your profile to attract better opportunities and stand out to recruiters</p>
+                    <div class="progress mb-2" role="progressbar" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: {{ profile_completion }}%"></div>
+                    </div>
+                     <div class="d-flex justify-content-between text-secondary small"><span>Started</span><span>Complete</span></div>
+                    <a href="#" class="btn btn-dark w-100 mt-4 py-2">Complete Profile</a>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="main-card">
+                    <h5 class="main-card-header mb-3"><i class="fas fa-history me-2"></i> Recent Applications</h5>
+                    {% for app in recent_applications_list %}
+                        <div class="d-flex justify-content-between align-items-center recent-application-item">
+                            <div>
+                                <div class="job-title">{{ app.job.title }}</div>
+                                <div class="job-company">{{ app.job.company }}</div>
+                            </div>
+                            <span class="job-status">{{ app.status }}</span>
+                        </div>
+                    {% empty %}
+                        <p class="text-secondary text-center mt-4">No recent applications found.</p>
+                    {% endfor %}
+                    
+                    <!-- THE FIX IS HERE -->
+                    {% if recent_applications_list %}
+                        <a href="#" class="btn btn-light w-100 mt-3">View All</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}
