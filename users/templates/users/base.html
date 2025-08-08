@@ -20,6 +20,41 @@
     <link rel="stylesheet" type="text/css" href="{% static 'users/css/resume.css' %}"> 
     <link rel="stylesheet" type="text/css" href="{% static 'users/css/notifications.css' %}">
 
+<!-- ADD THE FOLLOWING STYLE BLOCK FOR THE CUSTOM SCROLLBAR -->
+    <style>
+        /* This sets the base font and background for the entire site */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f8f9fe; 
+        }
+
+        /* --- Custom Scrollbar Styling (for WebKit browsers: Chrome, Safari, Edge) --- */
+        
+        /* 1. The scrollbar itself */
+        ::-webkit-scrollbar {
+            width: 18px; /* Width of the scrollbar */
+        }
+
+      
+        /* 3. The handle (the draggable part) */
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color, #2962FF); /* Your main blue color */
+            border-radius: 10px; /* Rounded corners */
+            border: 3px solid #f0f4ff; /* Creates a nice padding effect */
+        }
+
+        /* 4. The hover effect for the handle */
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--primary-dark, #0D47A1); /* Your darker blue on hover */
+        }
+
+        /* --- Custom Scrollbar Styling (for Firefox) --- */
+        /* Firefox has a simpler implementation */
+        html {
+            scrollbar-width: 2px; /* Can be 'auto', 'thin', or 'none' */
+            scrollbar-color: var(--primary-color, #2962FF) #f0f4ff; /* thumb color track color */
+        }
+    </style>
 
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f8f9fe; }

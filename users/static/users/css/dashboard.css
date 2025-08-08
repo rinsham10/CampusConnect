@@ -154,3 +154,14 @@
     padding: 0.2rem 0.6rem;
     border-radius: 0.3rem;
 }
+
+/* Style for the notification bell link in the header */
+.notification-bell-link .fa-bell {
+    color: #888; /* Set a base grey color */
+    transition: color 0.2s ease-in-out; /* Add a smooth transition effect */
+}
+
+/* This rule applies ONLY when the mouse is hovering over the link */
+.notification-bell-link:hover .fa-bell {
+    color: #111; /* Change to a darker color on hover */
+}

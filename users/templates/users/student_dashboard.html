@@ -8,7 +8,7 @@
 <nav class="col-md-3 col-lg-2 d-md-block sidebar">
     <div class="position-sticky">
         <div class="sidebar-header mb-4">
-            <span class="logo-text">{{ user.username }}</span>
+            <span class="logo-text">CampusConnect</span>
             <div class="platform-text">Career Platform</div>
         </div>
         <ul class="nav flex-column">
@@ -34,12 +34,14 @@
     <div class="main-content">
         <div class="top-bar mb-4">
             <div>
-                <h1>Welcome back</h1>
+                <h2>Welcome back, <span class="fw-bold">{{ user.username }}</span></h2>
                 <p class="text-secondary">Here's your career preparation overview</p>
             </div>
             <div class="d-flex align-items-center">
-                <span class="last-updated me-3"><i class="far fa-clock"></i> Last updated: {{ last_updated|date:"j/n/Y" }}</span>
+                <!-- <span class="last-updated me-3"><i class="far fa-clock"></i> Last updated: {{ last_updated|date:"j/n/Y" }}</span> -->
+                <a href="{% url 'notification-list' %}" class="notification-bell-link">
                 <i class="far fa-bell me-3 fs-5"></i>
+                </a>
                 <div class="user-initials">{{ user.username|first|upper }}</div>
             </div>
         </div>
