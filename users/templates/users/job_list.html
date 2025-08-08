@@ -1,0 +1,42 @@
+<!-- users/templates/users/job_list.html -->
+{% extends "users/base.html" %}
+
+{% block content %}
+<style>
+    .job-card {
+        border: 1px solid #e9e9f1;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        background-color: #fff;
+        margin-bottom: 1.5rem;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+    .job-card:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Available Jobs</h1>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    {% for job in jobs %}
+        <div class="job-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>{{ job.title }}</h4>
+                    <h6 class="text-secondary">{{ job.company }}</h6>
+                </div>
+                <div>
+                    <!-- This link will work in the next step -->
+                    <a href="{% url 'job-detail' job.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No jobs are available at the moment. Please check back later.</p>
+    {% endfor %}
+</div>
+{% endblock %}

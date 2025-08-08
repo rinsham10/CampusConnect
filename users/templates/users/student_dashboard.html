@@ -13,16 +13,16 @@
         </div>
         <ul class="nav flex-column">
             <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home nav-icon"></i> Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'job-list' %}"><i class="fas fa-briefcase nav-icon"></i> Career</a></li>
             <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-file-alt nav-icon"></i> Resume</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'my-applications' %}"><i class="fas fa-paper-plane nav-icon"></i> Applications</a></li>
             <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell nav-icon"></i> Notifications</a></li>
         </ul>
 
         <div class="quick-actions-header">Quick Actions</div>
         <ul class="nav flex-column">
             <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-plus-circle nav-icon"></i> Upload Resume</a></li>
-            <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-search nav-icon"></i> Find Jobs</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'job-list' %}"><i class="fas fa-search nav-icon"></i> Find Jobs</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'predict' %}"><i class="fas fa-wand-magic-sparkles nav-icon"></i> Placement Prediction</a></li>
             <li class="nav-item mt-4"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt nav-icon"></i> Logout</a></li>
         </ul>
@@ -84,7 +84,7 @@
                     
                     <!-- THE FIX IS HERE -->
                     {% if recent_applications_list %}
-                        <a href="#" class="btn btn-light w-100 mt-3">View All</a>
+                        <a href="{% url 'my-applications' %}" class="btn btn-light w-100 mt-3">View All</a>
                     {% endif %}
                 </div>
             </div>
@@ -92,3 +92,4 @@
     </div>
 </main>
 {% endblock %}
+

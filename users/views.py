@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .models import StudentApplication, Job, Resume, Profile
 from django.utils import timezone
 from datetime import timedelta
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 
 def register_view(request):
     if request.method == 'POST':
@@ -91,6 +93,46 @@ def student_dashboard_view(request):
         'last_updated': timezone.now()
     }
     return render(request, 'users/student_dashboard.html', context)
+
+@login_required
+def job_list_view(request):
+    jobs = Job.objects.all().order_by('-created_at') # Show newest jobs first
+    context = {
+        'jobs': jobs
+    }
+    return render(request, 'users/job_list.html', context)
+
+
+@login_required
+def job_detail_view(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    
+    # Check if the student has already applied for this job
+    has_applied = StudentApplication.objects.filter(student=request.user, job=job).exists()
+
+    if request.method == 'POST':
+        # Prevent applying again if they already have
+        if not has_applied:
+            StudentApplication.objects.create(student=request.user, job=job)
+            messages.success(request, f"You have successfully applied for the {job.title} position.")
+            # Redirect to the same page; the template will now show "Already Applied"
+            return redirect('job-detail', job_id=job.id)
+    
+    context = {
+        'job': job,
+        'has_applied': has_applied
+    }
+    return render(request, 'users/job_detail.html', context)
+
+
+@login_required
+def my_applications_view(request):
+    applications = StudentApplication.objects.filter(student=request.user).order_by('-applied_date')
+    context = {
+        'applications': applications
+    }
+    return render(request, 'users/my_applications.html', context)
+
 
 def logout_view(request):
     logout(request)
