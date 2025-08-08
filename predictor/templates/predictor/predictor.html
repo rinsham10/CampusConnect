@@ -1,39 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Placement Prediction</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'predictor/predictor.css' %}">
-</head>
-<body>
-    <h2>Enter Student Details</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label>SSC %:</label>
-<input type="number" name="ssc_p" step="0.01" min="1" max="100" required><br>
+<!-- predictor/templates/predictor/predict.html -->
+{% extends "users/career_base.html" %}
 
-<label>HSC %:</label>
-<input type="number" name="hsc_p" step="0.01" min="1" max="100" required><br>
+{% block career_content %}
 
-<label>Degree %:</label>
-<input type="number" name="degree_p" step="0.01" min="1" max="100" required><br>
+<!-- These styles will ONLY apply to this page -->
+<style>
+    .predictor-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2.5rem;
+        background-color: #fff;
+        border: 1px solid #e9e9f1;
+        border-radius: 0.75rem;
+    }
+    .result-box {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        background-color: #f0f4ff;
+        color: #1a2a5e;
+    }
+</style>
 
-<label>Employability Test %:</label>
-<input type="number" name="etest_p" step="0.01" min="1" max="100" required><br>
+<div class="career-main-content">
+    <div class="predictor-container">
+        <div class="text-center">
+            <h1 class="mb-3">Enter Student Details</h1>
+        </div>
+        <hr class="my-4">
 
-<label>MCA %:</label>
-<input type="number" name="mba_p" step="0.01" min="1" max="100" required><br>
-<label>Work Experience:</label>
-<select name="workex" required>
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-</select><br>
+        <form method="post">
+            {% csrf_token %}
 
-        <input type="submit" value="Predict">
-    </form>
+            <!-- We use Bootstrap's grid system to align the form neatly -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="ssc_p" class="form-label">SSC %:</label>
+                    <input type="number" id="ssc_p" name="ssc_p" class="form-control" step="0.01" min="1" max="100" required>
+                </div>
 
-    {% if result %}
-        <h3>Prediction: {{ result }}</h3>
-    {% endif %}
-</body>
-</html>
+                <div class="col-md-6">
+                    <label for="hsc_p" class="form-label">HSC %:</label>
+                    <input type="number" id="hsc_p" name="hsc_p" class="form-control" step="0.01" min="1" max="100" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="degree_p" class="form-label">Degree %:</label>
+                    <input type="number" id="degree_p" name="degree_p" class="form-control" step="0.01" min="1" max="100" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="etest_p" class="form-label">Employability Test %:</label>
+                    <input type="number" id="etest_p" name="etest_p" class="form-control" step="0.01" min="1" max="100" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="mba_p" class="form-label">MCA %:</label>
+                    <input type="number" id="mba_p" name="mba_p" class="form-control" step="0.01" min="1" max="100" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="workex" class="form-label">Work Experience:</label>
+                    <select id="workex" name="workex" class="form-select" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No" selected>No</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- The submit button is now styled -->
+            <button type="submit" class="btn btn-primary w-100 mt-4 py-2">Predict</button>
+        </form>
+
+        <!-- The result is now in a styled box -->
+        {% if result %}
+            <div class="result-box mt-4">
+                <h3>Prediction: {{ result }}</h3>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
