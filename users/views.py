@@ -1,5 +1,6 @@
 # users/views.py
 
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -10,7 +11,6 @@ from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Q
 
 def register_view(request):
     if request.method == 'POST':
@@ -162,11 +162,27 @@ def job_detail_view(request, job_id):
     return render(request, 'users/job_detail.html', context)
 
 
+# users/views.py
+
 @login_required
 def my_applications_view(request):
-    applications = StudentApplication.objects.filter(student=request.user).order_by('-applied_date')
+    """This view lists all applications for the current student and handles search."""
+    queryset = StudentApplication.objects.filter(student=request.user).order_by('-applied_date')
+    search_query = request.GET.get('q', '')
+    
+    if search_query:
+        # THE FIX IS HERE: We now search by the simple, built-in 'id' field
+        queryset = queryset.filter(
+            Q(job__title__icontains=search_query) |
+            Q(job__company__icontains=search_query) |
+            Q(id__icontains=search_query) 
+        )
+        
+    total_applications = queryset.count()
     context = {
-        'applications': applications
+        'applications': queryset,
+        'total_applications': total_applications,
+        'search_query': search_query,
     }
     return render(request, 'users/my_applications.html', context)
 
