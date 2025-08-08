@@ -10,6 +10,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
 
 def register_view(request):
     if request.method == 'POST':
@@ -96,9 +97,48 @@ def student_dashboard_view(request):
 
 @login_required
 def job_list_view(request):
-    jobs = Job.objects.all().order_by('-created_at') # Show newest jobs first
+    """This view displays all available jobs and handles search/filter functionality."""
+    
+    # Start with all jobs
+    queryset = Job.objects.all().order_by('-created_at')
+    
+    # Get the filter parameters from the URL
+    search_query = request.GET.get('q', '')
+    location_filter = request.GET.get('location', '')
+    job_type_filter = request.GET.get('type', '')
+    
+    # --- Apply filters if they exist ---
+    
+    # 1. Search filter (for title, company, or description)
+    if search_query:
+        queryset = queryset.filter(
+            Q(title__icontains=search_query) |
+            Q(company__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    
+    # 2. Location filter
+    if location_filter:
+        queryset = queryset.filter(location__iexact=location_filter)
+        
+    # 3. Job Type filter
+    if job_type_filter:
+        queryset = queryset.filter(job_type__iexact=job_type_filter)
+        
+    # --- Prepare data for dropdowns ---
+    
+    # Get distinct locations and job types from the database to populate the filters
+    distinct_locations = Job.objects.values_list('location', flat=True).distinct().order_by('location')
+    
     context = {
-        'jobs': jobs
+        'jobs': queryset,
+        'job_types': Job.JobType.choices, # Pass the choices from the model
+        'distinct_locations': distinct_locations,
+        
+        # Pass the current filter values back to the template to pre-fill the form
+        'search_query': search_query,
+        'location_filter': location_filter,
+        'job_type_filter': job_type_filter,
     }
     return render(request, 'users/job_list.html', context)
 

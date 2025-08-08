@@ -1,0 +1,129 @@
+/* users/static/users/css/career.css */
+
+.career-main-content {
+    padding: 2rem 3rem;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #e9e9f1;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.filter-bar .form-control, .filter-bar .form-select {
+    border: none;
+    background-color: #f8f9fe;
+}
+
+.job-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.job-card {
+    background-color: #fff;
+    border: 1px solid #e9e9f1;
+    border-radius: 1rem; /* More rounded corners */
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER SECTION --- */
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically align items */
+    margin-bottom: 1.5rem;
+}
+
+.job-card-company-details {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Space between logo and text */
+}
+
+.job-card-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    background-color: #f0f0ff;
+    color: #4A46C6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.company-name {
+    font-weight: 600;
+    color: #111;
+    line-height: 1.2;
+}
+
+.company-tagline {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.job-card-tag {
+    background-color: #f8f9fa;
+    color: #555;
+    padding: 0.3rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* --- BODY SECTION --- */
+.job-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 1rem;
+}
+
+.job-card-details {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.job-card-details li {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.job-card-details li i {
+    color: #888;
+    width: 24px;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+}
+
+/* --- FOOTER SECTION --- */
+.job-card-footer {
+    margin-top: auto;
+}
+
+.job-card-footer .btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #111;
+    border-color: #111;
+    font-weight: 500;
+}
+
+.job-card-footer .btn:hover {
+    background-color: #333;
+}

@@ -37,11 +37,25 @@ def save_user_profile(sender, instance, **kwargs):
 # 2. Job Model
 # This will be created by the Admin in the Django Admin Panel.
 class Job(models.Model):
+    class JobType(models.TextChoices):
+        FULL_TIME = "Full-time", "Full-time"
+        PART_TIME = "Part-time", "Part-time"
+        INTERNSHIP = "Internship", "Internship"
+        CONTRACT = "Contract", "Contract"
+
     title = models.CharField(max_length=100)
     company = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, default="Work From Home (Remote)")
+    job_type = models.CharField(max_length=20, choices=JobType.choices, default=JobType.FULL_TIME)
     description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # New Salary Fields
+    salary_min = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    salary_max = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    currency = models.CharField(max_length=10, default="INR")
+    
     deadline = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} at {self.company}'

@@ -14,8 +14,23 @@ class CustomUserAdmin(UserAdmin):
     )
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ('title', 'company', 'created_at', 'deadline')
-    search_fields = ('title', 'company')
+    list_display = ('title', 'company', 'job_type', 'location', 'deadline')
+    search_fields = ('title', 'company', 'description')
+    list_filter = ('job_type', 'location')
+    
+    # Organize the fields in the admin edit form
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'company', 'description')
+        }),
+        ('Job Details', {
+            'fields': ('location', 'job_type', 'deadline')
+        }),
+        ('Salary Information', {
+            'fields': ('currency', 'salary_min', 'salary_max')
+        }),
+    )
+
 
 class StudentApplicationAdmin(admin.ModelAdmin):
     list_display = ('student', 'job', 'applied_date', 'status')

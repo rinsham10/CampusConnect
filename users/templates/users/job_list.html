@@ -1,42 +1,87 @@
 <!-- users/templates/users/job_list.html -->
-{% extends "users/base.html" %}
+{% extends "users/career_base.html" %}
 
-{% block content %}
-<style>
-    .job-card {
-        border: 1px solid #e9e9f1;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        background-color: #fff;
-        margin-bottom: 1.5rem;
-        transition: box-shadow 0.2s ease-in-out;
-    }
-    .job-card:hover {
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-</style>
-
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Available Jobs</h1>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+{% block career_content %}
+<div class="career-main-content">
+    <div class="header">
+        <h1>Discover Your Next Career Opportunity</h1>
+        <p class="text-secondary">Find amazing job opportunities that match your skills and aspirations</p>
     </div>
 
-    {% for job in jobs %}
+    <!-- Filter Bar Form -->
+    <form method="GET" action="{% url 'job-list' %}">
+        <div class="filter-bar">
+            <!-- Search Input -->
+            <input type="text" class="form-control" name="q" placeholder="Search jobs, companies, or skills..." value="{{ search_query }}">
+            
+            <!-- Location Dropdown -->
+            <select class="form-select" name="location" onchange="this.form.submit()">
+                <option value="">All Locations</option>
+                {% for location in distinct_locations %}
+                    <option value="{{ location }}" {% if location == location_filter %}selected{% endif %}>
+                        {{ location }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <!-- Job Type Dropdown -->
+            <select class="form-select" name="type" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                {% for value, display_name in job_types %}
+                    <option value="{{ value }}" {% if value == job_type_filter %}selected{% endif %}>
+                        {{ display_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <!-- Submit Button (optional, as dropdowns auto-submit) -->
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Job Grid -->
+    <div class="job-grid">
+        {% for job in jobs %}
         <div class="job-card">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h4>{{ job.title }}</h4>
-                    <h6 class="text-secondary">{{ job.company }}</h6>
+            <div class="job-card-header">
+                <div class="job-card-company-details">
+                    <div class="job-card-logo">{{ job.company|first }}</div>
+                    <div class="job-card-company-info">
+                        <div class="company-name">{{ job.company }}</div>
+                        <div class="company-tagline">Company</div>
+                    </div>
                 </div>
                 <div>
-                    <!-- This link will work in the next step -->
-                    <a href="{% url 'job-detail' job.id %}" class="btn btn-primary">View Details</a>
+                    <span class="job-card-tag">{{ job.job_type }}</span>
                 </div>
             </div>
+            <div class="job-card-body">
+                <h5 class="job-card-title">{{ job.title }}</h5>
+                <ul class="job-card-details">
+                    <li><i class="fas fa-map-marker-alt"></i>{{ job.location }}</li>
+                    <li>
+                        <i class="fas fa-wallet"></i>
+                        {% if job.salary_min and job.salary_max %}
+                            {{ job.currency }} {{ job.salary_min|floatformat:0 }} - {{ job.salary_max|floatformat:0 }}
+                        {% else %}
+                            Not Disclosed
+                        {% endif %}
+                    </li>
+                    <li>
+                        <i class="far fa-clock"></i>
+                        Apply by {{ job.deadline|date:"j/n/Y"|default:"N/A" }}
+                    </li>
+                </ul>
+            </div>
+            <div class="job-card-footer">
+                <a href="{% url 'job-detail' job.id %}" class="btn btn-dark">View Job Details</a>
+            </div>
         </div>
-    {% empty %}
-        <p>No jobs are available at the moment. Please check back later.</p>
-    {% endfor %}
+        {% empty %}
+            <div class="col-12">
+                <p class="text-center text-secondary mt-5">No jobs found matching your criteria.</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
