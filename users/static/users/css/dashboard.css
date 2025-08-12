@@ -90,14 +90,147 @@
     border-radius: 0.75rem;
     padding: 1.5rem;
     border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
 }
 
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
 .stat-card h3 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--heading-color);
 }
+.stat-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0;
+}.stat-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
+}
 
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+.stat-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0;
+}.stat-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
+}
+
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+.stat-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0;
+}.stat-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
+}
+
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+.stat-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0;
+}.stat-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
+}
+
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+.stat-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0;
+}.stat-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* ADD THIS LINE */
+}
+
+/* ADD THIS NEW RULE FOR THE HOVER EFFECT */
+.stat-card:hover {
+    transform: translateY(-5px); /* Lifts the card up by 5 pixels */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Adds a soft, modern shadow */
+}
+
+
+/* ... the rest of your .stat-card h3, p, etc. rules remain the same ... */
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+}
 .stat-card p {
     font-size: 1rem;
     color: var(--text-color);
