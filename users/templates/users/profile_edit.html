@@ -1,86 +1,83 @@
 <!-- users/templates/users/profile_edit.html -->
 {% extends "users/career_base.html" %}
-{% load template_extras %} <!-- THIS IS THE FIX -->
+{% load template_extras %}
 
 {% block page_title %}Edit Information{% endblock %}
 {% block page_subtitle %}Update your personal and social details{% endblock %}
 
 
 {% block career_content %}
-<div class="container-fluid p-4">
+<div class="main-content">
     <form method="post">
         {% csrf_token %}
         <div class="row">
-            <div class="col-lg-8">
-                <!-- Personal Info Card -->
-                <div class="profile-card mb-4">
-                    <h5><i class="fas fa-user-circle me-2"></i>Basic Information</h5>
+            <div class="col-lg-12">
+                <!-- Basic Information Card -->
+                <div class="main-card mb-4">
+                    <h5 class="main-card-header"><i class="fas fa-user-circle me-2"></i>Basic Information</h5>
                     <div class="row">
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.first_name.id_for_label }}"><i class="fas fa-user me-2"></i>First Name</label>
                             {{ form.first_name|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.last_name.id_for_label }}"><i class="fas fa-user me-2"></i>Last Name</label>
                             {{ form.last_name|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.email.id_for_label }}">Email</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.email.id_for_label }}"><i class="fas fa-envelope me-2"></i>Email</label>
                             {{ form.email|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.phone_number.id_for_label }}">Phone</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.phone_number.id_for_label }}"><i class="fas fa-phone me-2"></i>Phone</label>
                             {{ form.phone_number|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.fathers_name.id_for_label }}">Father's Name</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.fathers_name.id_for_label }}"><i class="fas fa-user-friends me-2"></i>Father's Name</label>
                             {{ form.fathers_name|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-6 info-group">
-                            <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.date_of_birth.id_for_label }}"><i class="fas fa-calendar-alt me-2"></i>Date of Birth</label>
                             {{ form.date_of_birth|attr:"class:form-control" }}
                         </div>
-                         <div class="col-md-6 info-group">
-                            <label for="{{ form.gender.id_for_label }}">Gender</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.gender.id_for_label }}"><i class="fas fa-venus-mars me-2"></i>Gender</label>
                             {{ form.gender|attr:"class:form-control" }}
                         </div>
-                         <div class="col-md-6 info-group">
-                            <label for="{{ form.nationality.id_for_label }}">Nationality</label>
+                        <div class="col-md-6 profile-info-item">
+                            <label for="{{ form.nationality.id_for_label }}"><i class="fas fa-flag me-2"></i>Nationality</label>
                             {{ form.nationality|attr:"class:form-control" }}
                         </div>
-                         <div class="col-12 info-group">
-                            <label for="{{ form.address.id_for_label }}">Address</label>
+                        <div class="col-12 profile-info-item">
+                            <label for="{{ form.address.id_for_label }}"><i class="fas fa-map-marker-alt me-2"></i>Address</label>
                             {{ form.address|attr:"class:form-control" }}
                         </div>
                     </div>
                 </div>
                 
                 <!-- Social Links Card -->
-                <div class="profile-card">
-                    <h5><i class="fas fa-globe me-2"></i>Social Links</h5>
-                     <div class="row">
-                        <div class="col-md-4 info-group">
-                            <label for="{{ form.linkedin_url.id_for_label }}">LinkedIn URL</label>
+                <div class="main-card mb-4">
+                    <h5 class="main-card-header"><i class="fas fa-globe me-2"></i>Social Links</h5>
+                    <div class="row">
+                        <div class="col-md-4 profile-info-item">
+                            <label for="{{ form.linkedin_url.id_for_label }}"><i class="fab fa-linkedin me-2"></i>LinkedIn URL</label>
                             {{ form.linkedin_url|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-4 info-group">
-                            <label for="{{ form.github_url.id_for_label }}">GitHub URL</label>
+                        <div class="col-md-4 profile-info-item">
+                            <label for="{{ form.github_url.id_for_label }}"><i class="fab fa-github me-2"></i>GitHub URL</label>
                             {{ form.github_url|attr:"class:form-control" }}
                         </div>
-                        <div class="col-md-4 info-group">
-                            <label for="{{ form.portfolio_url.id_for_label }}">Portfolio URL</label>
+                        <div class="col-md-4 profile-info-item">
+                            <label for="{{ form.portfolio_url.id_for_label }}"><i class="fas fa-briefcase me-2"></i>Portfolio URL</label>
                             {{ form.portfolio_url|attr:"class:form-control" }}
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-lg-4">
-                 <!-- Action Card -->
-                <div class="profile-card">
-                    <h5>Actions</h5>
-                    <button type="submit" class="btn btn-primary w-100 mb-2">Save Changes</button>
-                    <a href="{% url 'profile' %}" class="btn btn-secondary w-100">Cancel</a>
+
+                <!-- Action Buttons -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-5 me-2">Save Changes</button>
+                    <a href="{% url 'profile' %}" class="btn btn-secondary px-5">Cancel</a>
                 </div>
             </div>
         </div>
