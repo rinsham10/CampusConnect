@@ -1,0 +1,59 @@
+<!-- users/templates/users/profile.html -->
+{% extends "users/career_base.html" %}
+
+{% block page_title %}Personal Information{% endblock %}
+{% block page_subtitle %}Manage and update your personal details{% endblock %}
+
+
+{% block career_content %}
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Basic Information Card -->
+            <div class="main-card mb-4">
+                <h5 class="main-card-header"><i class="fas fa-user-circle me-2"></i>Basic Information</h5><br>
+                <div class="row">
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-user me-2"></i>Full Name</span><span class="value">{{ user.get_full_name|default_if_none:"-" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-envelope me-2"></i>Email</span><span class="value">{{ user.email|default_if_none:"-" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-phone me-2"></i>Phone</span><span class="value {% if not user.profile.phone_number %}empty{% endif %}">{{ user.profile.phone_number|default_if_none:"Not specified" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-user-friends me-2"></i>Father's Name</span><span class="value {% if not user.profile.fathers_name %}empty{% endif %}">{{ user.profile.fathers_name|default_if_none:"Not specified" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-calendar-alt me-2"></i>Date of Birth</span><span class="value {% if not user.profile.date_of_birth %}empty{% endif %}">{{ user.profile.date_of_birth|date:"F j, Y"|default_if_none:"Not specified" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-venus-mars me-2"></i>Gender</span><span class="value {% if not user.profile.gender %}empty{% endif %}">{{ user.profile.gender|default_if_none:"Not specified" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-flag me-2"></i>Nationality</span><span class="value {% if not user.profile.nationality %}empty{% endif %}">{{ user.profile.nationality|default_if_none:"Not specified" }}</span></div>
+                    <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-map-marker-alt me-2"></i>Address</span><span class="value {% if not user.profile.address %}empty{% endif %}">{{ user.profile.address|default_if_none:"Not specified" }}</span></div>
+                </div>
+            </div>
+            
+            <!-- Social Links Card -->
+            <div class="main-card mb-4">
+                <h5 class="main-card-header"><i class="fas fa-globe me-2"></i>Social Links</h5><br>
+                <div class="row">
+                    <div class="col-md-4 profile-info-item">
+                        <span class="label"><i class="fab fa-linkedin me-2"></i>LinkedIn</span>
+                        <span class="value">
+                            {% if user.profile.linkedin_url %}<a href="{{ user.profile.linkedin_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}
+                        </span>
+                    </div>
+                    <div class="col-md-4 profile-info-item">
+                        <span class="label"><i class="fab fa-github me-2"></i>GitHub</span>
+                        <span class="value">
+                            {% if user.profile.github_url %}<a href="{{ user.profile.github_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}
+                        </span>
+                    </div>
+                    <div class="col-md-4 profile-info-item">
+                        <span class="label"><i class="fas fa-briefcase me-2"></i>Portfolio</span>
+                        <span class="value">
+                            {% if user.profile.portfolio_url %}<a href="{{ user.profile.portfolio_url }}" target="_blank">View Site</a>{% else %}<span class="empty">Not specified</span>{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button - Centered -->
+            <div class="text-center">
+                <a href="{% url 'profile-edit' %}" class="btn btn-primary px-5">Edit Information</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

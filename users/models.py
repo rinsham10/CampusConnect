@@ -21,6 +21,17 @@ class CustomUser(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='profile')
     profile_completion = models.IntegerField(default=20) # Start at 20% for a new account
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    fathers_name = models.CharField(max_length=100, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+    nationality = models.CharField(max_length=50, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    
+    # New Social Links
+    linkedin_url = models.URLField(blank=True, null=True)
+    github_url = models.URLField(blank=True, null=True)
+    portfolio_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -128,3 +139,12 @@ class Notification(models.Model):
 
     def __str__(self):
         return f'Notification for {self.user.username}: {self.message[:30]}'
+    
+
+class Education(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='education')
+    # You can expand this with more fields like degree, university, etc.
+    details = models.TextField(blank=True, null=True, help_text="Enter your educational qualifications (e.g., Degree, University, Year of Passing).")
+
+    def __str__(self):
+        return f'Education for {self.user.username}'    

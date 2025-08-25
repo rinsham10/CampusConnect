@@ -34,7 +34,7 @@
     <div class="main-content">
         <div class="top-bar mb-4">
             <div>
-                <h2>Welcome back, <span class="fw-bold">{{ user.username }}</span></h2>
+                <h1>Welcome back, <span class="fw-bold">{{ user.username }}</span></h1>
                 <p class="text-secondary">Here's your career preparation overview</p>
             </div>
             <div class="d-flex align-items-center">
@@ -65,7 +65,7 @@
                         <div class="progress-bar" style="width: {{ profile_completion }}%"></div>
                     </div>
                      <div class="d-flex justify-content-between text-secondary small"><span>Started</span><span>Complete</span></div>
-                    <a href="#" class="btn btn-dark w-100 mt-4 py-2">Complete Profile</a>
+                    <a href="{% url 'profile' %}" class="btn btn-dark w-100 mt-4 py-2">Complete Profile</a>
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Resume
+from .models import CustomUser, Resume, Profile
 from django.contrib.auth.forms import AuthenticationForm
 
 class RegistrationForm(forms.ModelForm):
@@ -125,3 +125,41 @@ class ApplicationForm(forms.Form):
             self.add_error('new_resume', "Only PDF files are allowed.")
             
         return cleaned_data
+    
+class ProfileUpdateForm(forms.ModelForm):
+    # Fields from the CustomUser model
+    first_name = forms.CharField(max_length=100, required=True)
+    last_name = forms.CharField(max_length=100, required=True)
+    email = forms.EmailField(required=True)
+    
+    # A widget to get a nice date picker for the date_of_birth field
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = Profile
+        # List all fields from the Profile model you want to edit
+        fields = [
+            'phone_number', 'fathers_name', 'date_of_birth', 'gender', 
+            'nationality', 'address', 'linkedin_url', 'github_url', 'portfolio_url'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Pre-populate the form with the user's existing data
+        if self.instance and self.instance.user:
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+            self.fields['email'].initial = self.instance.user.email
+
+    def save(self, commit=True):
+        # Save the data to both the User and Profile models
+        user = self.instance.user
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
+        
+        if commit:
+            user.save()
+            
+        profile = super().save(commit=commit)
+        return profile

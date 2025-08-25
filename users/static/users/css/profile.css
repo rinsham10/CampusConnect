@@ -1,0 +1,81 @@
+/* users/static/users/css/profile.css */
+.profile-card {
+    background-color: #fff;
+    border: 1px solid #e9e9f1;
+    border-radius: 0.75rem;
+    padding: 2rem;
+}
+
+.profile-card h5 {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-card h5 i {
+    color: #4A46C6; /* Primary blue */
+}
+.social-links-header i {
+    color: #198754; /* Green for social icon */
+}
+
+/* This is the crucial style for the inner grey boxes */
+.info-box {
+    background-color: #f8f9fe; /* Light grey background */
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-box label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 0.1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-box .value {
+    font-weight: 500;
+    color: #111;
+    word-break: break-all;
+}
+
+.info-box .value.empty {
+    color: #999;
+    font-style: italic;
+}
+
+/* Social Link Pills */
+.social-pills {
+    display: flex;
+    gap: 1rem;
+}
+.social-pills a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+.social-pills a i {
+    margin-right: 0.5rem;
+}
+.social-pills .linkedin {
+    background-color: #eaf2ff; color: #0d6efd; border-color: #c4daff;
+}
+.social-pills .github {
+    background-color: #f8f9fa; color: #343a40; border-color: #dee2e6;
+}
+.social-pills .portfolio {
+    background-color: #fceeff; color: #d63384; border-color: #f8d7eb;
+}

@@ -298,3 +298,36 @@
 .notification-bell-link:hover .fa-bell {
     color: #111; /* Change to a darker color on hover */
 }
+
+.profile-info-item {
+    margin-bottom: 1.5rem;
+}
+
+.profile-info-item .label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.profile-info-item .value {
+    font-weight: 500;
+    color: #111;
+}
+
+.profile-info-item .value.empty {
+    color: #999;
+    font-style: italic;
+}
+
+.profile-info-item .value a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.profile-info-item .value a:hover {
+    text-decoration: underline;
+}

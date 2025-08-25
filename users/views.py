@@ -15,6 +15,7 @@ from .forms import RegistrationForm, LoginForm, ResumeUploadForm
 from .forms import ApplicationForm 
 from django.utils import timezone
 from datetime import timedelta
+from .forms import ProfileUpdateForm
 
 
 def register_view(request):
@@ -274,3 +275,42 @@ def notification_list_view(request):
     # notifications.update(is_read=True)
     
     return render(request, 'users/notification_list.html', context)
+
+@login_required
+def profile_view(request):
+    profile = request.user.profile
+    
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile')
+    else:
+        # Pre-populate the form with existing data
+        form = ProfileUpdateForm(instance=profile)
+        
+    context = {
+        'form': form
+    }
+    return render(request, 'users/profile.html', context)
+
+@login_required
+def profile_edit_view(request):
+    profile = request.user.profile
+    
+    if request.method == 'POST':
+        # Pass the POST data and the profile instance to the form
+        form = ProfileUpdateForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile') # Redirect back to the view-only profile page
+    else:
+        # On a GET request, show the form pre-populated with existing data
+        form = ProfileUpdateForm(instance=profile)
+        
+    context = {
+        'form': form
+    }
+    return render(request, 'users/profile_edit.html', context)
