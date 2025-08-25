@@ -42,9 +42,12 @@
                 <a href="{% url 'notification-list' %}" class="notification-bell-link">
                 <i class="far fa-bell me-3 fs-5"></i>
                 </a>
-                <div class="user-initials">{{ user.username|first|upper }}</div>
-            </div>
+            <!-- This is now a clickable link -->
+            <a href="{% url 'profile' %}" class="user-initials-link" style="text-decoration: none;">
+            <div class="user-initials">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+            </a>
         </div>
+    </div>
 
         <div class="row">
             <div class="col-md-3"><div class="stat-card"><h3>{{ total_applications }}</h3><p>Total Applications</p></div></div>
@@ -57,14 +60,14 @@
             <div class="col-lg-7">
                 <div class="main-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="main-card-header mb-0"><i class="fas fa-user-check me-2"></i> Profile Completion</h5>
-                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill px-3 py-2">Excellent</span>
+                        <h5 class="main-card-header mb-0"><i class="fas fa-user-check me-2"></i> Profile Completion</h5><br><br>
+                        <!-- <span class="badge bg-success-subtle text-success-emphasis rounded-pill px-3 py-2">Excellent</span> -->
                     </div>
                     <p class="text-secondary mb-3">Complete your profile to attract better opportunities and stand out to recruiters</p>
-                    <div class="progress mb-2" role="progressbar" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="width: {{ profile_completion }}%"></div>
+                    <!-- <div class="progress mb-2" role="progressbar" aria-valuenow="{{ profile_completion }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: {{ profile_completion }}%"></div> 
                     </div>
-                     <div class="d-flex justify-content-between text-secondary small"><span>Started</span><span>Complete</span></div>
+                     <div class="d-flex justify-content-between text-secondary small"><span>Started</span><span>Complete</span></div> -->
                     <a href="{% url 'profile' %}" class="btn btn-dark w-100 mt-4 py-2">Complete Profile</a>
                 </div>
             </div>

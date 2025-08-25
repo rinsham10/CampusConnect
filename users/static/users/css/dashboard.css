@@ -78,6 +78,15 @@
     justify-content: center;
     font-weight: 600;
     margin-left: 1rem;
+    
+    /* Add the transition property here */
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/* This targets the <a> tag directly */
+a.user-initials-link:hover .user-initials {
+    transform: scale(1.1);
+    opacity: 0.9;
 }
 
 .last-updated {
@@ -331,3 +340,4 @@
 .profile-info-item .value a:hover {
     text-decoration: underline;
 }
+
