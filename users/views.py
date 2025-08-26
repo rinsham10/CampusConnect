@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
-from .models import StudentApplication, Job, Resume, Profile, Notification
+from .models import StudentApplication, Job, Resume, Profile, Notification, EducationDetail
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
@@ -16,6 +16,10 @@ from .forms import ApplicationForm
 from django.utils import timezone
 from datetime import timedelta
 from .forms import ProfileUpdateForm
+from django.forms import inlineformset_factory
+from django import forms
+from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 def register_view(request):
@@ -293,7 +297,7 @@ def profile_view(request):
     context = {
         'form': form
     }
-    return render(request, 'users/profile.html', context)
+    return render(request, 'users/profile.html', {'user': request.user})
 
 @login_required
 def profile_edit_view(request):
@@ -314,3 +318,52 @@ def profile_edit_view(request):
         'form': form
     }
     return render(request, 'users/profile_edit.html', context)
+
+@login_required
+def education_edit_view(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        messages.error(request, 'Profile not found. Please create your profile first.')
+        # IMPORTANT: Change this URL name to wherever your profile creation page is
+        return redirect('profile-create') 
+
+    # Create a FormSet factory that links EducationDetail to your Profile model
+    EducationFormSet = inlineformset_factory(
+        Profile,              
+        EducationDetail,      
+        fields=('degree', 'institution', 'start_year', 'end_year', 'cgpa'),
+        extra=1,              
+        can_delete=True,      
+        # The 'forms' prefix now works because we imported the module
+        widgets={
+            'degree': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Bachelor of Technology'}),
+            'institution': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., ABC University'}),
+            'start_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2020'}),
+            'end_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Leave blank if current'}),
+            'cgpa': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 8.5'}),
+        }
+    )
+
+    if request.method == 'POST':
+        formset = EducationFormSet(request.POST, instance=profile)
+        if formset.is_valid():
+            formset.save()
+            messages.success(request, 'Your education details have been updated successfully!')
+            base_url = reverse('profile') 
+            redirect_url = f'{base_url}?view=education'
+            # 3. Redirect to the new URL
+            return redirect(redirect_url)
+        else:
+            # --- THIS IS THE CRITICAL DEBUGGING LINE ---
+            print("Formset is NOT valid. Errors:", formset.errors)
+            # ---------------------------------------------
+            messages.error(request, 'Please correct the errors below.') # Add a generic error message
+
+    else:
+        formset = EducationFormSet(instance=profile)
+
+    context = {
+        'formset': formset
+    }
+    return render(request, 'users/education_form.html', context)

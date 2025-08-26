@@ -1,0 +1,123 @@
+{% extends "users/career_base.html" %}
+
+{% block page_title %}Edit Education{% endblock %}
+{% block page_subtitle %}Add, update, or remove your academic qualifications{% endblock %}
+
+{% block career_content %}
+<div class="main-content">
+    <div class="main-card mb-4 p-4">
+        <form method="POST" novalidate id="education-formset">
+            {% csrf_token %}
+            {{ formset.management_form }}
+
+            <h5 class="main-card-header mb-4"><i class="fas fa-book-reader me-2"></i>Manage Education Entries</h5>
+
+            {% for form in formset %}
+                <div class="education-form-entry p-3 mb-3 border rounded">
+                    {{ form.id }}
+                     <!-- Display non-field errors -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+                    <!-- THE FIX: Display non-field errors (e.g., uniqueness issues) -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Degree</label>
+                            {{ form.degree }}
+                            <!-- THE FIX: Display errors for this specific field -->
+                            {% if form.degree.errors %}<div class="text-danger small mt-1">{{ form.degree.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Institution / University</label>
+                            {{ form.institution }}
+                            {% if form.institution.errors %}<div class="text-danger small mt-1">{{ form.institution.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Start Year</label>
+                            {{ form.start_year }}
+                            {% if form.start_year.errors %}<div class="text-danger small mt-1">{{ form.start_year.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">End Year (or Expected)</label>
+                            {{ form.end_year }}
+                            {% if form.end_year.errors %}<div class="text-danger small mt-1">{{ form.end_year.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">CGPA / Percentage</label>
+                            {{ form.cgpa }}
+                            {% if form.cgpa.errors %}<div class="text-danger small mt-1">{{ form.cgpa.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                     {% if form.instance.pk %}
+        <div class="form-check mt-3">
+            {{ form.DELETE }}
+            <label class="form-check-label" for="{{ form.DELETE.id_for_label }}">
+                Check to delete this entry
+            </label>
+        </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary px-5">Save Changes</button>
+                <a href="{% url 'profile' %}?view=education" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- RECOMMENDED: Add this script for a better user experience -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formset = document.getElementById('education-formset');
+    if (formset) {
+        formset.addEventListener('submit', function(event) {
+            // Find all the form entries
+            const forms = formset.querySelectorAll('.education-form-entry');
+            
+            forms.forEach((form, index) => {
+                // We only care about the extra forms, not existing ones
+                const hasInstance = form.querySelector('input[id$="-DELETE"]');
+                if (hasInstance) {
+                    return; // Skip existing forms
+                }
+
+                // Check if all text/number inputs in this extra form are empty
+                const inputs = form.querySelectorAll('input[type="text"], input[type="number"]');
+                let allEmpty = true;
+                inputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        allEmpty = false;
+                    }
+                });
+
+                // If all inputs are empty, we need to tell Django to ignore this form.
+                // We do this by finding its hidden DELETE checkbox and checking it.
+                if (allEmpty) {
+                    const totalFormsInput = document.getElementById('id_educationdetail_set-TOTAL_FORMS');
+                    if (totalFormsInput && index < parseInt(totalFormsInput.value, 10)) {
+                         // This is a bit of a hack, but for empty forms, we can effectively "remove" them from submission
+                         // by marking them for deletion, though they don't exist yet. The formset handles this gracefully.
+                         // A cleaner way for more complex scenarios would be to adjust TOTAL_FORMS, but this is robust.
+                         const deleteCheckbox = document.getElementById(`id_educationdetail_set-${index}-DELETE`);
+                         if (deleteCheckbox) {
+                             deleteCheckbox.checked = true;
+                         }
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+
+{% endblock %}

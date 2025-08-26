@@ -141,10 +141,15 @@ class Notification(models.Model):
         return f'Notification for {self.user.username}: {self.message[:30]}'
     
 
-class Education(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='education')
-    # You can expand this with more fields like degree, university, etc.
-    details = models.TextField(blank=True, null=True, help_text="Enter your educational qualifications (e.g., Degree, University, Year of Passing).")
+class EducationDetail(models.Model):
+    # Link each education entry to a user's profile
+    profile = models.ForeignKey(Profile, related_name='education_details', on_delete=models.CASCADE)
+    
+    degree = models.CharField(max_length=100)
+    institution = models.CharField(max_length=200)
+    start_year = models.PositiveIntegerField()
+    end_year = models.PositiveIntegerField(null=True, blank=True) # Could still be studying
+    cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f'Education for {self.user.username}'    
+        return f"{self.degree} from {self.institution}"

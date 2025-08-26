@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Resume, Profile
+from .models import CustomUser, Resume, Profile, EducationDetail
 from django.contrib.auth.forms import AuthenticationForm
 
 class RegistrationForm(forms.ModelForm):
@@ -163,3 +163,16 @@ class ProfileUpdateForm(forms.ModelForm):
             
         profile = super().save(commit=commit)
         return profile
+    
+
+class EducationForm(forms.ModelForm):
+    class Meta:
+        model = EducationDetail
+        fields = ['degree', 'institution', 'start_year', 'end_year', 'cgpa']
+        widgets = {
+            'institution': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., ABC University'}),
+            'degree': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Bachelor of Technology'}),
+            'start_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 2020'}),
+            'end_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Leave blank if current'}),
+            'cgpa': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g., 8.5'}),
+        }

@@ -1,17 +1,49 @@
-<!-- users/templates/users/profile.html -->
 {% extends "users/career_base.html" %}
 
-{% block page_title %}Personal Information{% endblock %}
-{% block page_subtitle %}Manage and update your personal details{% endblock %}
-
+{% block page_title %}My Profile{% endblock %}
+{% block page_subtitle %}Manage and update your personal and academic details{% endblock %}
 
 {% block career_content %}
 <div class="main-content">
-    <div class="row">
-        <div class="col-lg-12">
+    <!-- This is the main container for our tabbed interface -->
+    <div class="profile-container">
+
+        <!-- =============================================================== -->
+        <!-- == TOP HEADER: This part contains the titles and nav buttons == -->
+        <!-- =============================================================== -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <!-- This is the title area that will change -->
+            <div id="profile-title-area">
+                <!-- Title for Personal Info (Visible by default) -->
+                <h4 id="personal-title" class="mb-0 fw-bold"><i class="fas fa-user-circle me-2"></i>Personal Info</h4>
+                <!-- Title for Education (Hidden by default) -->
+                <h4 id="education-title" class="mb-0 fw-bold d-none"><i class="fas fa-graduation-cap me-2"></i>Education Details</h4>
+            </div>
+
+            <!-- This is the navigation button area -->
+            <div id="profile-nav-area">
+                <!-- Button to switch TO Education (Visible by default) -->
+                <div id="to-education-btn" class="btn-group" role="group">
+                    <button type="button" class="btn btn-light border"><i class="fas fa-book"></i></button>
+                    <button type="button" class="btn btn-light border"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <!-- Button to switch TO Personal (Hidden by default) -->
+                <div id="to-personal-btn" class="btn-group d-none" role="group">
+                    <button type="button" class="btn btn-light border"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="btn btn-light border"><i class="fas fa-user-circle"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- == CONTENT PANELS: The actual content that gets swapped     == -->
+        <!-- =============================================================== -->
+
+        <!-- Panel 1: Personal Information (Visible by default) -->
+        <div id="personal-info-panel">
             <!-- Basic Information Card -->
             <div class="main-card mb-4">
-                <h5 class="main-card-header"><i class="fas fa-user-circle me-2"></i>Basic Information</h5><br>
+                <h5 class="main-card-header"><i class="fas fa-info-circle me-2"></i>Basic Information</h5><br>
                 <div class="row">
                     <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-user me-2"></i>Full Name</span><span class="value">{{ user.get_full_name|default_if_none:"-" }}</span></div>
                     <div class="col-md-6 profile-info-item"><span class="label"><i class="fas fa-envelope me-2"></i>Email</span><span class="value">{{ user.email|default_if_none:"-" }}</span></div>
@@ -28,32 +60,93 @@
             <div class="main-card mb-4">
                 <h5 class="main-card-header"><i class="fas fa-globe me-2"></i>Social Links</h5><br>
                 <div class="row">
-                    <div class="col-md-4 profile-info-item">
-                        <span class="label"><i class="fab fa-linkedin me-2"></i>LinkedIn</span>
-                        <span class="value">
-                            {% if user.profile.linkedin_url %}<a href="{{ user.profile.linkedin_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}
-                        </span>
-                    </div>
-                    <div class="col-md-4 profile-info-item">
-                        <span class="label"><i class="fab fa-github me-2"></i>GitHub</span>
-                        <span class="value">
-                            {% if user.profile.github_url %}<a href="{{ user.profile.github_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}
-                        </span>
-                    </div>
-                    <div class="col-md-4 profile-info-item">
-                        <span class="label"><i class="fas fa-briefcase me-2"></i>Portfolio</span>
-                        <span class="value">
-                            {% if user.profile.portfolio_url %}<a href="{{ user.profile.portfolio_url }}" target="_blank">View Site</a>{% else %}<span class="empty">Not specified</span>{% endif %}
-                        </span>
-                    </div>
+                    <div class="col-md-4 profile-info-item"><span class="label"><i class="fab fa-linkedin me-2"></i>LinkedIn</span><span class="value">{% if user.profile.linkedin_url %}<a href="{{ user.profile.linkedin_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}</span></div>
+                    <div class="col-md-4 profile-info-item"><span class="label"><i class="fab fa-github me-2"></i>GitHub</span><span class="value">{% if user.profile.github_url %}<a href="{{ user.profile.github_url }}" target="_blank">View Profile</a>{% else %}<span class="empty">Not specified</span>{% endif %}</span></div>
+                    <div class="col-md-4 profile-info-item"><span class="label"><i class="fas fa-briefcase me-2"></i>Portfolio</span><span class="value">{% if user.profile.portfolio_url %}<a href="{{ user.profile.portfolio_url }}" target="_blank">View Site</a>{% else %}<span class="empty">Not specified</span>{% endif %}</span></div>
                 </div>
             </div>
 
-            <!-- Action Button - Centered -->
-            <div class="text-center">
+            <!-- Action Button -->
+            <div class="text-center mt-4">
                 <a href="{% url 'profile-edit' %}" class="btn btn-primary px-5">Edit Information</a>
             </div>
         </div>
+
+
+        <!-- Panel 2: Education Details (Hidden by default) -->
+        <div id="education-panel" class="d-none">
+            <div class="main-card mb-4">
+                <h5 class="main-card-header"><i class="fas fa-book-reader me-2"></i>Academic Qualifications</h5><br>
+                
+                {% for edu in user.profile.education_details.all %}
+                    <div class="education-entry mb-3">
+                        <h6><strong>{{ edu.degree }}</strong></h6>
+                        <p class="mb-1"><i class="fas fa-university me-2 text-muted"></i>{{ edu.institution }}</p>
+                        <p class="mb-1"><i class="fas fa-calendar-check me-2 text-muted"></i>{{ edu.start_year }} - {{ edu.end_year|default:"Present" }}</p>
+                        {% if edu.cgpa %}<p class="mb-1"><i class="fas fa-star-half-alt me-2 text-muted"></i>CGPA: {{ edu.cgpa }}</p>{% endif %}
+                    </div>
+                    {% if not forloop.last %}<hr>{% endif %}
+                {% empty %}
+                    <p class="text-muted">No education details have been added yet.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Action Button -->
+            <div class="text-center mt-4">
+                <!-- IMPORTANT: Make sure you have a URL named 'education-edit' in your urls.py -->
+                <a href="{% url 'education-edit' %}" class="btn btn-primary px-5">Edit Education</a>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Get all the elements we need to toggle ---
+    const personalPanel = document.getElementById('personal-info-panel');
+    const educationPanel = document.getElementById('education-panel');
+    const personalTitle = document.getElementById('personal-title');
+    const educationTitle = document.getElementById('education-title');
+    const toEducationBtn = document.getElementById('to-education-btn');
+    const toPersonalBtn = document.getElementById('to-personal-btn');
+
+    // --- Function to switch to the Education view ---
+    const switchToEducation = (event) => {
+        if (event) event.preventDefault(); // Prevent default link behavior if called by a click
+        personalPanel.classList.add('d-none');
+        educationPanel.classList.remove('d-none');
+        personalTitle.classList.add('d-none');
+        educationTitle.classList.remove('d-none');
+        toEducationBtn.classList.add('d-none');
+        toPersonalBtn.classList.remove('d-none');
+    };
+
+    // --- Function to switch back to the Personal Info view ---
+    const switchToPersonal = (event) => {
+        if (event) event.preventDefault(); // Prevent default link behavior
+        educationPanel.classList.add('d-none');
+        personalPanel.classList.remove('d-none');
+        educationTitle.classList.add('d-none');
+        personalTitle.classList.remove('d-none');
+        toPersonalBtn.classList.add('d-none');
+        toEducationBtn.classList.remove('d-none');
+    };
+
+    // --- Add click event listeners to the buttons ---
+    toEducationBtn.addEventListener('click', switchToEducation);
+    toPersonalBtn.addEventListener('click', switchToPersonal);
+    
+    // --- THE FIX: Check URL on page load ---
+    // 1. Create a URLSearchParams object from the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 2. Check if the 'view' parameter is 'education'
+    if (urlParams.get('view') === 'education') {
+        // 3. If it is, call the function to switch to the education tab
+        switchToEducation(null); // Pass null because it's not a click event
+    }
+});
+</script>
+
 {% endblock %}
