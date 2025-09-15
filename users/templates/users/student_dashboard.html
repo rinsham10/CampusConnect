@@ -4,6 +4,34 @@
 {% block content %}
 <!-- The <style> block has been correctly removed from here and placed in a static CSS file -->
 
+<style>
+    /*
+     * This rule targets the link that wraps the card.
+     * It removes the underline and sets the text color to the default.
+     */
+    .stat-card-link {
+        text-decoration: none !important; /* !important ensures this rule wins */
+        color: inherit;
+        display: block; /* Makes the entire area clickable */
+    }
+
+    /*
+     * This adds a smooth transition effect for the hover animation.
+     */
+    .stat-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    /*
+     * This is the hover effect. When you hover over the link,
+     * the card inside it lifts up and gets a shadow.
+     */
+    .stat-card-link:hover .stat-card {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
 <!-- Sidebar -->
 <nav class="col-md-3 col-lg-2 d-md-block sidebar">
     <div class="position-sticky">
@@ -49,11 +77,34 @@
         </div>
     </div>
 
-        <div class="row">
-            <div class="col-md-4"><div class="stat-card"><h3>{{ total_applications }}</h3><p>Total Applications</p></div></div>
-            <!-- <div class="col-md-3"><div class="stat-card"><h3>{{ profile_completion }}%</h3><p>Profile Completion</p></div></div> -->
-            <div class="col-md-4"><div class="stat-card"><h3>{{ deadlines }}</h3><p>Deadlines</p></div></div>
-            <div class="col-md-4"><div class="stat-card"><h3>{{ recent_resumes }}</h3><p>Recent Resumes</p></div></div>
+ <div class="row">
+            <!-- Card 1: Total Applications (Now a link) -->
+            <div class="col-md-4">
+                <a href="{% url 'my-applications' %}" class="stat-card-link">
+                    <div class="stat-card">
+                        <h3>{{ total_applications }}</h3>
+                        <p>Total Applications</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 2: Deadlines (Remains unclickable) -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h3>{{ deadlines }}</h3>
+                    <p>Deadlines</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Recent Resumes (Now a link) -->
+            <div class="col-md-4">
+                <a href="{% url 'resume-management' %}" class="stat-card-link">
+                    <div class="stat-card">
+                        <h3>{{ recent_resumes }}</h3>
+                        <p>Recent Resumes</p>
+                    </div>
+                </a>
+            </div>
         </div>
 
         <div class="row">
@@ -68,7 +119,7 @@
                         <div class="progress-bar" style="width: {{ profile_completion }}%"></div> 
                     </div>
                      <div class="d-flex justify-content-between text-secondary small"><span>Started</span><span>Complete</span></div> -->
-                    <a href="{% url 'profile' %}" class="btn btn-dark w-100 mt-4 py-2">Complete Profile</a>
+                    <a href="{% url 'profile' %}" class="btn btn-dark w-100 mt-4 py-2">Go To Profile</a>
                 </div>
             </div>
 
