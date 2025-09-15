@@ -77,18 +77,26 @@ def student_dashboard_view(request):
     total_applications = StudentApplication.objects.filter(student=student).count()
     
     # 2. Profile Completion
-    profile, created = Profile.objects.get_or_create(user=student)
-    profile_completion = profile.profile_completion
+    try:
+        profile = Profile.objects.get(user=student)
+        profile_completion = profile.profile_completion
+    except Profile.DoesNotExist:
+        profile_completion = 0
     
     # 3. *** THIS IS THE NEW DEADLINE LOGIC ***
     # Get today's date and the date for one week from now
     today = timezone.now().date()
     one_week_from_now = today + timedelta(days=7)
     
-    # Count jobs with a deadline between today and one week from now
+    # First, get a list of IDs for all jobs the student has applied for.
+    applied_job_ids = StudentApplication.objects.filter(student=student).values_list('job_id', flat=True)
+    
+    # Now, count jobs with an upcoming deadline, EXCLUDING the ones already applied for.
     upcoming_deadlines_count = Job.objects.filter(
         deadline__gte=today, 
         deadline__lte=one_week_from_now
+    ).exclude(
+        id__in=applied_job_ids
     ).count()
     
     # 4. Total Resumes uploaded by the student
