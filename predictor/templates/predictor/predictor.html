@@ -1,9 +1,11 @@
-<!-- predictor/templates/predictor/predict.html -->
+<!-- templates/predictor/predictor_v2.html -->
+
 {% extends "users/career_base.html" %}
+{% load static %}
 
 {% block career_content %}
 
-<!-- These styles will ONLY apply to this page -->
+<!-- These styles are adapted from your original predictor for consistency -->
 <style>
     .predictor-container {
         max-width: 900px;
@@ -17,71 +19,124 @@
         margin-top: 2rem;
         padding: 1.5rem;
         border-radius: 0.5rem;
-        text-align: center;
+        text-align: left; /* Aligned left for better list readability */
+    }
+    .prediction-text {
         font-size: 1.5rem;
         font-weight: 600;
-        background-color: #f0f4ff;
-        color: #1a2a5e;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    .recommendations ul {
+        padding-left: 20px;
+        margin-top: 10px;
+    }
+    .recommendations li {
+        margin-bottom: 8px;
+    }
+    /* Custom alert colors to avoid conflicts with base template styles */
+    .alert-success-custom {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .alert-warning-custom {
+        background-color: #edf1ff;
+        color: #000000;
+        border: 1px solid #ffffff;
     }
 </style>
 
 <div class="career-main-content">
     <div class="predictor-container">
         <div class="text-center">
-            <h1 class="mb-3">Enter Student Details</h1>
+            <h1 class="mb-3">Placement Prediction</h1>
+            <p>Fill in your details to get a personalized placement prediction.</p>
         </div>
         <hr class="my-4">
 
         <form method="post">
             {% csrf_token %}
-
-            <!-- We use Bootstrap's grid system to align the form neatly -->
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="ssc_p" class="form-label">SSC %:</label>
-                    <input type="number" id="ssc_p" name="ssc_p" class="form-control" step="0.01" min="1" max="100" required>
+                    <label for="cgpa" class="form-label"><b>Current CGPA (out of 10):</b></label>
+                    <input type="number" step="0.01" name="cgpa" id="cgpa-input" class="form-control" min="1" max="10" placeholder="e.g., 8.5" required>
+                    <p id="cgpa-error" style="color: red; display: none; margin-top: 5px;">CGPA must be between 0.00 and 10.00.</p>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="hsc_p" class="form-label">HSC %:</label>
-                    <input type="number" id="hsc_p" name="hsc_p" class="form-control" step="0.01" min="1" max="100" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label for="degree_p" class="form-label">Degree %:</label>
-                    <input type="number" id="degree_p" name="degree_p" class="form-control" step="0.01" min="1" max="100" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label for="etest_p" class="form-label">Employability Test %:</label>
-                    <input type="number" id="etest_p" name="etest_p" class="form-control" step="0.01" min="1" max="100" required>
-                </div>
-
-                <div class="col-md-6">
-                    <label for="mba_p" class="form-label">MCA %:</label>
-                    <input type="number" id="mba_p" name="mba_p" class="form-control" step="0.01" min="1" max="100" required>
+                    <label for="academic_performance" class="form-label"><b>Academic Performance (Rate 1-10):</b></label>
+                    <input type="number" name="academic_performance" class="form-control" min="1" max="10" placeholder="e.g., 8" required>
                 </div>
                 
                 <div class="col-md-6">
-                    <label for="workex" class="form-label">Work Experience:</label>
-                    <select id="workex" name="workex" class="form-select" required>
+                    <label for="internship_experience" class="form-label"><b>Do you have Internship Experience?</b></label>
+                    <select name="internship_experience" class="form-select" required>
+                        <option value="No">No</option>
                         <option value="Yes">Yes</option>
-                        <option value="No" selected>No</option>
                     </select>
                 </div>
-            </div>
 
-            <!-- The submit button is now styled -->
-            <button type="submit" class="btn btn-primary w-100 mt-4 py-2">Predict</button>
+                <div class="col-md-6">
+                    <label for="communication_skills" class="form-label"><b>Communication Skills (Rate 1-10):</b></label>
+                    <input type="number" name="communication_skills" class="form-control" min="1" max="10" placeholder="e.g., 7" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="projects_completed" class="form-label"><b>Number of Projects Completed:</b></label>
+                    <input type="number" name="projects_completed" class="form-control" min="0" placeholder="e.g., 3" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-4 py-2">Predict My Chances</button>
         </form>
 
-        <!-- The result is now in a styled box -->
-        {% if result %}
-            <div class="result-box mt-4">
-                <h3>Prediction: {{ result }}</h3>
+        {% if error_message %}
+            <div class="result-box mt-4 alert alert-danger">
+                <p class="prediction-text">Error: {{ error_message }}</p>
+            </div>
+        {% elif prediction %}
+            <div class="result-box mt-4 {% if prob_placed >= 0.5 %}alert-success-custom{% else %}alert-warning-custom{% endif %}">
+                <p class="prediction-text">{{ prediction }}</p>
+                
+                {% if recommendations %}
+                    <hr>
+                    <div class="recommendations">
+                        <p class="mb-1"><b>💡 Here are some suggestions for you:</b></p>
+                        <ul>
+                            {% for item in recommendations %}
+                                <li>{{ item|safe }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
-
     </div>
 </div>
+
+<!-- JavaScript for real-time CGPA validation -->
+<script>
+    const cgpaInput = document.getElementById('cgpa-input');
+    const cgpaError = document.getElementById('cgpa-error');
+    const form = document.querySelector('form');
+
+    cgpaInput.addEventListener('input', function() {
+        const value = parseFloat(cgpaInput.value);
+        if (value < 0 || value > 10) {
+            cgpaError.style.display = 'block';
+        } else {
+            cgpaError.style.display = 'none';
+        }
+    });
+
+    form.addEventListener('submit', function(event) {
+        const value = parseFloat(cgpaInput.value);
+        if (value < 0 || value > 10) {
+            event.preventDefault();
+            cgpaError.style.display = 'block';
+            alert('Please correct the CGPA value before submitting.');
+        }
+    });
+</script>
+
 {% endblock %}

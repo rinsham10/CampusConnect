@@ -4,7 +4,7 @@ import pandas as pd
 from django.conf import settings
 from django.shortcuts import redirect, render
 
-def predict_view(request):
+def predict_old_view(request):
     result = None
 
     if request.method == 'POST':
@@ -35,7 +35,7 @@ def predict_view(request):
         except Exception as e:
             result = f"Error: {e}"
 
-    return render(request, 'predictor/predictor.html', {'result': result})
+    return render(request, 'predictor/predictor_old.html', {'result': result})
 
 # The NEW V2 Predictor Logic - ADD THIS SECTION
 # ------------------------------------------------------------------
@@ -47,7 +47,7 @@ except FileNotFoundError:
     raise RuntimeError(f"Model file not found at {MODEL_V2_PATH}. Please run the training script.")
 
 
-def predict_v2_view(request):
+def predict_view(request):
     """
     Handles the enhanced placement predictor with the Post/Redirect/Get pattern
     and detailed, multi-tiered recommendations.
@@ -55,7 +55,7 @@ def predict_v2_view(request):
     # This handles the initial page load and the load after a redirect
     if request.method == 'GET':
         context = request.session.pop('prediction_context', {}) # Use a default empty dict
-        return render(request, 'predictor/predictor_v2.html', context)
+        return render(request, 'predictor/predictor.html', context)
 
     # This handles the form submission
     if request.method == 'POST':
@@ -101,43 +101,59 @@ def predict_v2_view(request):
             else:
                 context_to_save['prediction'] = f"You have a {prob_not_placed:.0%} chance of not getting placed."
 
-            # --- 4. FULL RECOMMENDATION LOGIC ---
-            recommendations = []
+            # --- 4. NEW COMPREHENSIVE RECOMMENDATION LOGIC ---
+            critical_advice = []
+            improvement_advice = []
+            next_level_advice = []
+
+            # Analyze each feature independently
+            if cgpa < 7.0:
+                critical_advice.append("Raise your CGPA above 7.0. This is a critical first step as many companies have a strict academic cutoff.")
+            elif cgpa < 8.5:
+                improvement_advice.append("Your CGPA is good, but pushing it above 8.5 can open doors to more top-tier companies.")
+
+            if internship_encoded == 0:
+                critical_advice.append("Gain internship experience. Practical industry experience is a massive advantage and often a mandatory requirement.")
             
-            # Tier 1: Critical advice for profiles with low placement probability
-            if prob_placed < 0.60:
-                if cgpa < 7.0:
-                    recommendations.append("Focus on raising your CGPA. This is a critical first step as many companies have a strict academic cutoff.")
-                if internship_encoded == 0:
-                    recommendations.append("Actively seek an internship. Practical experience is one of the most important factors for recruiters.")
-                if projects_completed == 0:
-                    recommendations.append("Start building a portfolio by completing at least one or two significant projects in your field of interest.")
-                if communication_skills < 6:
-                    recommendations.append("Work on your communication skills. Join a public speaking club or take a course to build confidence.")
+            if projects_completed < 2:
+                critical_advice.append("Build a project portfolio. Aim for at least 2 significant projects to demonstrate your practical skills to recruiters.")
+            elif projects_completed < 4:
+                improvement_advice.append("Expand your portfolio with a more complex or team-based project to showcase collaboration and advanced skills.")
 
-            # Tier 2: Advice for profiles that are good but could be great
-            if 0.50 <= prob_placed < 0.85:
-                if academic_performance < 8:
-                    recommendations.append("While your CGPA is good, elevating your overall academic performance can help you stand out from other qualified candidates.")
-                if projects_completed <= 2:
-                    recommendations.append("Expand your portfolio with a diverse range of projects, perhaps collaborating with a team to showcase teamwork skills.")
-                if communication_skills < 8:
-                    recommendations.append("Refine your communication. Practice mock interviews to improve how you articulate your technical skills and experiences.")
-                if internship_encoded == 1 and projects_completed < 2:
-                    recommendations.append("Leverage your internship experience by creating a detailed project report or presentation based on your work. This powerfully connects theory with practice.")
+            if communication_skills < 7:
+                critical_advice.append("Improve communication skills. This is crucial for interviews. Join a public speaking club or practice mock interviews.")
+            elif communication_skills < 9:
+                improvement_advice.append("You communicate well. To excel, focus on storytelling—clearly articulating the 'what, how, and why' of your projects.")
 
-            # Tier 3: Advice for strong profiles aiming for top-tier companies
+            if academic_performance < 7:
+                improvement_advice.append("Boost your academic performance score by actively participating in class and consistently preparing for assessments.")
+
+            # Now, assemble the final recommendations based on priority
+            final_recommendations = []
+            if prob_placed < 0.50:
+                # If the chance is low, critical advice comes first
+                final_recommendations.extend(critical_advice)
+                final_recommendations.extend(improvement_advice)
+            else:
+                # If the chance is decent, improvement advice is more relevant
+                final_recommendations.extend(improvement_advice)
+                final_recommendations.extend(critical_advice) # Still show critical advice if any applies
+
+            # Add next-level advice for strong candidates
             if prob_placed >= 0.75:
-                recommendations.append("Your profile is strong! To aim for top-tier companies, consider getting a professional certification in a high-demand area (e.g., Cloud Computing, Data Science, AI/ML).")
-                recommendations.append("Start networking strategically. Connect with alumni and professionals from your dream companies on LinkedIn and attend industry-specific webinars.")
-                recommendations.append("Create a 'master resume' and tailor it for each specific job application, highlighting the projects and skills that perfectly match the job description.")
+                next_level_advice.append("Aim Higher: Your profile is strong! To target the best companies, consider these advanced steps:")
+                next_level_advice.append("Pursue a professional certification in a high-demand field.")
+                next_level_advice.append("Engage in strategic networking by connecting with alumni on LinkedIn.")
+                next_level_advice.append("Tailor your resume for each specific job application to match their requirements perfectly.")
+                final_recommendations.extend(next_level_advice)
 
-            context_to_save['recommendations'] = recommendations
+            # The final fallback: ensure no one leaves empty-handed
+            if not final_recommendations:
+                final_recommendations.append("Your profile is well-balanced and strong! Your main focus should now be on thorough interview preparation and researching specific companies.")
+
+            context_to_save['recommendations'] = final_recommendations
 
         except Exception as e:
-            # Save any error message to be displayed
-            context_to_save['error_message'] = f"An error occurred: {e}"
-
-        # --- 5. Save results to session and redirect ---
+         context_to_save['error_message'] = f"An error occurred: {e}"
         request.session['prediction_context'] = context_to_save
-        return redirect('predict_v2') # This name comes from your urls.py
+        return redirect('predict')

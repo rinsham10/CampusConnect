@@ -1,11 +1,10 @@
 from django.urls import path
-from . import views  # Ensure 'views' is imported
+from . import views
 
 urlpatterns = [
-    # This is your ORIGINAL predictor. It remains unchanged.
+    # The main URL '' now points to your NEW, renamed predict_view.
     path('', views.predict_view, name='predict'),
 
-    # This is the NEW path for your enhanced predictor.
-    # It will be accessible at a URL like "yourdomain.com/predictor/new"
-    path('new/', views.predict_v2_view, name='predict_v2'),
+    # The OLD predictor is now accessible at this backup URL, but hidden from regular users.
+    path('v1/', views.predict_old_view, name='predict_old'),
 ]
