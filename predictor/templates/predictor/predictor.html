@@ -1,4 +1,4 @@
-<!-- templates/predictor/predictor_v2.html -->
+<!-- templates/predictor/predict.html (FINAL VERSION) -->
 
 {% extends "users/career_base.html" %}
 {% load static %}
@@ -19,7 +19,7 @@
         margin-top: 2rem;
         padding: 1.5rem;
         border-radius: 0.5rem;
-        text-align: left; /* Aligned left for better list readability */
+        text-align: left;
     }
     .prediction-text {
         font-size: 1.5rem;
@@ -34,14 +34,13 @@
     .recommendations li {
         margin-bottom: 8px;
     }
-    /* Custom alert colors to avoid conflicts with base template styles */
     .alert-success-custom {
         background-color: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
     }
     .alert-warning-custom {
-        background-color: #edf1ff;
+        background-color: #edf1ff; /* Your custom color */
         color: #000000;
         border: 1px solid #ffffff;
     }
@@ -60,31 +59,36 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="cgpa" class="form-label"><b>Current CGPA (out of 10):</b></label>
-                    <input type="number" step="0.01" name="cgpa" id="cgpa-input" class="form-control" min="1" max="10" placeholder="e.g., 8.5" required>
+                    <!-- MODIFIED: Added value="{{ user_inputs.cgpa }}" -->
+                    <input type="number" step="0.01" name="cgpa" id="cgpa-input" class="form-control" placeholder="e.g., 8.5" required value="{{ user_inputs.cgpa }}">
                     <p id="cgpa-error" style="color: red; display: none; margin-top: 5px;">CGPA must be between 0.00 and 10.00.</p>
                 </div>
 
                 <div class="col-md-6">
                     <label for="academic_performance" class="form-label"><b>Academic Performance (Rate 1-10):</b></label>
-                    <input type="number" name="academic_performance" class="form-control" min="1" max="10" placeholder="e.g., 8" required>
+                    <!-- MODIFIED: Added value="{{ user_inputs.academic_performance }}" -->
+                    <input type="number" name="academic_performance" class="form-control" min="1" max="10" placeholder="e.g., 8" required value="{{ user_inputs.academic_performance }}">
                 </div>
                 
                 <div class="col-md-6">
                     <label for="internship_experience" class="form-label"><b>Do you have Internship Experience?</b></label>
+                    <!-- MODIFIED: Added logic to select the correct option -->
                     <select name="internship_experience" class="form-select" required>
-                        <option value="No">No</option>
-                        <option value="Yes">Yes</option>
+                        <option value="No" {% if user_inputs.internship_experience == 'No' %}selected{% endif %}>No</option>
+                        <option value="Yes" {% if user_inputs.internship_experience == 'Yes' %}selected{% endif %}>Yes</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label for="communication_skills" class="form-label"><b>Communication Skills (Rate 1-10):</b></label>
-                    <input type="number" name="communication_skills" class="form-control" min="1" max="10" placeholder="e.g., 7" required>
+                    <!-- MODIFIED: Added value="{{ user_inputs.communication_skills }}" -->
+                    <input type="number" name="communication_skills" class="form-control" min="1" max="10" placeholder="e.g., 7" required value="{{ user_inputs.communication_skills }}">
                 </div>
 
                 <div class="col-12">
                     <label for="projects_completed" class="form-label"><b>Number of Projects Completed:</b></label>
-                    <input type="number" name="projects_completed" class="form-control" min="0" placeholder="e.g., 3" required>
+                    <!-- MODIFIED: Added value="{{ user_inputs.projects_completed }}" -->
+                    <input type="number" name="projects_completed" class="form-control" min="0" placeholder="e.g., 3" required value="{{ user_inputs.projects_completed }}">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 mt-4 py-2">Predict My Chances</button>

@@ -40,49 +40,54 @@ def predict_old_view(request):
 # The NEW V2 Predictor Logic - ADD THIS SECTION
 # ------------------------------------------------------------------
 
-MODEL_V2_PATH = os.path.join(settings.BASE_DIR, 'placement_model_v2.pkl')
+MODEL_PATH = os.path.join(settings.BASE_DIR, 'placement_model_v2.pkl')
 try:
-    MODEL_V2 = joblib.load(MODEL_V2_PATH)
+    PLACEMENT_MODEL = joblib.load(MODEL_PATH)
 except FileNotFoundError:
-    raise RuntimeError(f"Model file not found at {MODEL_V2_PATH}. Please run the training script.")
+    raise RuntimeError(f"Model file not found at {MODEL_PATH}. Please run the training script.")
 
 
+# --- This is the complete, final view function ---
 def predict_view(request):
     """
-    Handles the enhanced placement predictor with the Post/Redirect/Get pattern
-    and detailed, multi-tiered recommendations.
+    Handles the placement predictor with Post/Redirect/Get, comprehensive recommendations,
+    and retention of user input values after prediction.
     """
-    # This handles the initial page load and the load after a redirect
     if request.method == 'GET':
-        context = request.session.pop('prediction_context', {}) # Use a default empty dict
+        context = request.session.pop('prediction_context', {})
         return render(request, 'predictor/predictor.html', context)
 
-    # This handles the form submission
     if request.method == 'POST':
-        # We will build the context here and save it to the session
+        # Capture the user's raw inputs to display them again after redirect
+        user_inputs = {
+            'cgpa': request.POST.get('cgpa'),
+            'academic_performance': request.POST.get('academic_performance'),
+            'internship_experience': request.POST.get('internship_experience'),
+            'communication_skills': request.POST.get('communication_skills'),
+            'projects_completed': request.POST.get('projects_completed'),
+        }
+        
         context_to_save = {
             'prediction': None,
             'recommendations': [],
-            'error_message': None
+            'error_message': None,
+            'prob_placed': 0,
+            'user_inputs': user_inputs  # Store the user's inputs
         }
         try:
-            # --- 1. Get and Validate Inputs ---
-            cgpa = float(request.POST['cgpa'])
-            academic_performance = int(request.POST['academic_performance'])
-            internship_experience = request.POST['internship_experience']
-            communication_skills = int(request.POST['communication_skills'])
-            projects_completed = int(request.POST['projects_completed'])
+            # --- Get and Validate Inputs ---
+            cgpa = float(user_inputs['cgpa'])
+            academic_performance = int(user_inputs['academic_performance'])
+            internship_experience = user_inputs['internship_experience']
+            communication_skills = int(user_inputs['communication_skills'])
+            projects_completed = int(user_inputs['projects_completed'])
 
-            if not (0.0 <= cgpa <= 10.0):
-                raise ValueError("CGPA must be between 0.0 and 10.0.")
-            if not (1 <= academic_performance <= 10):
-                raise ValueError("Academic Performance must be between 1 and 10.")
-            if not (1 <= communication_skills <= 10):
-                raise ValueError("Communication Skills must be between 1 and 10.")
-            if projects_completed < 0:
-                raise ValueError("Number of projects cannot be negative.")
+            if not (0.0 <= cgpa <= 10.0): raise ValueError("CGPA must be between 0.0 and 10.0.")
+            if not (1 <= academic_performance <= 10): raise ValueError("Academic Performance must be between 1 and 10.")
+            if not (1 <= communication_skills <= 10): raise ValueError("Communication Skills must be between 1 and 10.")
+            if projects_completed < 0: raise ValueError("Number of projects cannot be negative.")
 
-            # --- 2. Preprocess and Predict ---
+            # --- Preprocess and Predict ---
             internship_encoded = 1 if internship_experience.lower() == 'yes' else 0
             input_data = pd.DataFrame({
                 'CGPA': [cgpa],
@@ -91,17 +96,20 @@ def predict_view(request):
                 'Communication_Skills': [communication_skills],
                 'Projects_Completed': [projects_completed]
             })
-            probabilities = MODEL_V2.predict_proba(input_data)[0]
+            probabilities = PLACEMENT_MODEL.predict_proba(input_data)[0]
             prob_placed = probabilities[1]
             prob_not_placed = probabilities[0]
 
-            # --- 3. Generate Prediction String ---
+            context_to_save['prob_placed'] = prob_placed 
+
+            # --- Generate Prediction String ---
             if prob_placed >= 0.5:
                 context_to_save['prediction'] = f"You have a {prob_placed:.0%} chance of getting placed."
             else:
                 context_to_save['prediction'] = f"You have a {prob_not_placed:.0%} chance of not getting placed."
 
-            # --- 4. NEW COMPREHENSIVE RECOMMENDATION LOGIC ---
+            # --- FULL RECOMMENDATION LOGIC ---
+            recommendations = []
             critical_advice = []
             improvement_advice = []
             next_level_advice = []
@@ -128,22 +136,20 @@ def predict_view(request):
             if academic_performance < 7:
                 improvement_advice.append("Boost your academic performance score by actively participating in class and consistently preparing for assessments.")
 
-            # Now, assemble the final recommendations based on priority
+            # Assemble the final recommendations based on priority
             final_recommendations = []
             if prob_placed < 0.50:
-                # If the chance is low, critical advice comes first
                 final_recommendations.extend(critical_advice)
                 final_recommendations.extend(improvement_advice)
             else:
-                # If the chance is decent, improvement advice is more relevant
                 final_recommendations.extend(improvement_advice)
-                final_recommendations.extend(critical_advice) # Still show critical advice if any applies
+                final_recommendations.extend(critical_advice)
 
             # Add next-level advice for strong candidates
             if prob_placed >= 0.75:
                 next_level_advice.append("Aim Higher: Your profile is strong! To target the best companies, consider these advanced steps:")
                 next_level_advice.append("Pursue a professional certification in a high-demand field.")
-                next_level_advice.append("Engage in strategic networking by connecting with alumni on LinkedIn.")
+                next_level_advice.append("Engage in strategic networking by connecting with alumni and professionals on LinkedIn.")
                 next_level_advice.append("Tailor your resume for each specific job application to match their requirements perfectly.")
                 final_recommendations.extend(next_level_advice)
 
@@ -154,6 +160,7 @@ def predict_view(request):
             context_to_save['recommendations'] = final_recommendations
 
         except Exception as e:
-         context_to_save['error_message'] = f"An error occurred: {e}"
+            context_to_save['error_message'] = f"An error occurred: {e}"
+
         request.session['prediction_context'] = context_to_save
         return redirect('predict')
