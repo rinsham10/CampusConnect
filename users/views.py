@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
-from .models import StudentApplication, Job, Resume, Profile, Notification, EducationDetail
+from .models import StudentApplication, Job, Resume, Profile, Notification, EducationDetail, CustomUser
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
@@ -22,25 +22,39 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 
 
+# In your users/views.py
+
 def register_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            user = form.save(commit=False)  # Don't save to the database immediately
+            
+            # --- THIS IS THE KEY CHANGE ---
+            user.is_active = False  # Set the user as inactive by default
+            # -----------------------------
+
             # Split 'full_name' into first_name and last_name
             full_name = form.cleaned_data.get('full_name').split()
             user.first_name = full_name[0]
             if len(full_name) > 1:
                 user.last_name = ' '.join(full_name[1:])
+            
             # Set and hash the password
             user.set_password(form.cleaned_data.get('password'))
+            
             # All users registered through this form are students
             user.role = 'STUDENT'
-            user.save()
-            messages.success(request, 'Registration successful! You can now log in.')
+            
+            user.save()  # Now, save the user to the database
+            
+            # Update the message to inform the user about the approval process
+            messages.success(request, 'Your account has been successfully created and is now awaiting administrator approval.')
+            
             return redirect('login')
     else:
         form = RegistrationForm()
+    
     return render(request, 'users/register.html', {'form': form})
 
 def login_view(request):
@@ -49,18 +63,43 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Role-based redirection logic
-                if user.role == 'ADMIN':
-                    return redirect('admin:index')  # Django's built-in admin dashboard
+            
+            # --- START OF NEW, CORRECTED LOGIC ---
+            
+            try:
+                # Step 1: Find the user by their username first.
+                user = CustomUser.objects.get(username=username)
+                
+                # Step 2: Check if the password is correct for that user.
+                if user.check_password(password):
+                    # Step 3: NOW, check if the user is active.
+                    if user.is_active:
+                        # All checks passed! Log them in.
+                        login(request, user)
+                        # Role-based redirection logic
+                        if user.role == 'ADMIN':
+                            return redirect('admin:index')
+                        else:
+                            return redirect('dashboard')
+                    else:
+                        # Password was correct, but the account is inactive.
+                        messages.error(request, 'This account is inactive and is awaiting administrator approval.')
+                        return redirect('login')
                 else:
-                    return redirect('dashboard') # Student dashboard
-            else:
+                    # Password was incorrect.
+                    messages.error(request, 'Invalid username or password.')
+                    return redirect('login')
+                    
+            except CustomUser.DoesNotExist:
+                # The username does not exist in the database.
                 messages.error(request, 'Invalid username or password.')
+                return redirect('login')
+            
+            # --- END OF NEW LOGIC ---
+            
     else:
         form = LoginForm()
+        
     return render(request, 'users/login.html', {'form': form})
 
 @login_required

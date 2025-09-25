@@ -1,17 +1,37 @@
 # users/admin.py
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, Profile, Job, StudentApplication, Resume
 
+# --- 1. NEW: Define the custom admin "action" for approval ---
+@admin.action(description='Activate selected user accounts')
+def make_active(modeladmin, request, queryset):
+    """
+    This action sets the 'is_active' flag to True for all selected users.
+    """
+    queryset.update(is_active=True)
+# --- End of new section ---
+
+
 class CustomUserAdmin(UserAdmin):
     # This will display the 'role' field in the admin user list
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'role')
+    # MODIFIED: Added 'is_active' to the list_display to see pending users
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'role', 'is_active')
+
+    # ADDED: A filter to easily find inactive users awaiting approval
+    list_filter = UserAdmin.list_filter + ('is_active', 'role')
+
+    # ADDED: The new approval action to the actions dropdown
+    actions = [make_active]
+    
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('role',)}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('role',)}),
     )
+
 
 class JobAdmin(admin.ModelAdmin):
     list_display = ('title', 'company', 'job_type', 'location', 'deadline')
@@ -34,13 +54,11 @@ class JobAdmin(admin.ModelAdmin):
     )
 
 
-
 class StudentApplicationAdmin(admin.ModelAdmin):
     list_display = ('student', 'job', 'applied_date', 'status')
     list_filter = ('status', 'job__company')
 
-# Unregister the default CustomUser admin if it was registered simply before
-# admin.site.unregister(CustomUser) 
+# Your registrations remain the same, but the CustomUser is now enhanced.
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile)
 admin.site.register(Job, JobAdmin)
