@@ -77,13 +77,13 @@ def predict_view(request):
         try:
             # --- Get and Validate Inputs ---
             cgpa = float(user_inputs['cgpa'])
-            academic_performance = int(user_inputs['academic_performance'])
+            academic_performance = float(user_inputs['academic_performance'])
             internship_experience = user_inputs['internship_experience']
             communication_skills = int(user_inputs['communication_skills'])
             projects_completed = int(user_inputs['projects_completed'])
 
             if not (0.0 <= cgpa <= 10.0): raise ValueError("CGPA must be between 0.0 and 10.0.")
-            if not (1 <= academic_performance <= 10): raise ValueError("Academic Performance must be between 1 and 10.")
+            if not (0.0 <= academic_performance <= 10.0): raise ValueError("UG CGPA must be between 0.0 and 10.0.")
             if not (1 <= communication_skills <= 10): raise ValueError("Communication Skills must be between 1 and 10.")
             if projects_completed < 0: raise ValueError("Number of projects cannot be negative.")
 

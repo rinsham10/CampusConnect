@@ -58,16 +58,17 @@
             {% csrf_token %}
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="cgpa" class="form-label"><b>Current CGPA (out of 10):</b></label>
+                    <label for="cgpa" class="form-label"><b>PG CGPA (out of 10):</b></label>
                     <!-- MODIFIED: Added value="{{ user_inputs.cgpa }}" -->
                     <input type="number" step="0.01" name="cgpa" id="cgpa-input" class="form-control" placeholder="e.g., 8.5" required value="{{ user_inputs.cgpa }}">
                     <p id="cgpa-error" style="color: red; display: none; margin-top: 5px;">CGPA must be between 0.00 and 10.00.</p>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="academic_performance" class="form-label"><b>Academic Performance (Rate 1-10):</b></label>
+                    <label for="academic_performance" class="form-label"><b>UG CGPA (Out of 10):</b></label>
                     <!-- MODIFIED: Added value="{{ user_inputs.academic_performance }}" -->
-                    <input type="number" name="academic_performance" class="form-control" min="1" max="10" placeholder="e.g., 8" required value="{{ user_inputs.academic_performance }}">
+                    <input type="number" step="0.01" name="academic_performance" id="ug-cgpa" class="form-control" placeholder="e.g., 8" required value="{{ user_inputs.academic_performance }}">
+                    <p id="ug-cgpa-error" style="color: red; display: none; margin-top: 5px;">UG CGPA must be between 0.00 and 10.00.</p>
                 </div>
                 
                 <div class="col-md-6">
@@ -120,27 +121,56 @@
 
 <!-- JavaScript for real-time CGPA validation -->
 <script>
-    const cgpaInput = document.getElementById('cgpa-input');
-    const cgpaError = document.getElementById('cgpa-error');
-    const form = document.querySelector('form');
+const cgpaInput = document.getElementById('cgpa-input');
+const cgpaError = document.getElementById('cgpa-error');
 
-    cgpaInput.addEventListener('input', function() {
-        const value = parseFloat(cgpaInput.value);
-        if (value < 0 || value > 10) {
-            cgpaError.style.display = 'block';
-        } else {
-            cgpaError.style.display = 'none';
-        }
-    });
+const ugCgpaInput = document.getElementsByName('academic_performance')[0];
+const ugCgpaError = document.getElementById('ug-cgpa-error');
 
-    form.addEventListener('submit', function(event) {
-        const value = parseFloat(cgpaInput.value);
-        if (value < 0 || value > 10) {
-            event.preventDefault();
-            cgpaError.style.display = 'block';
-            alert('Please correct the CGPA value before submitting.');
-        }
-    });
+const form = document.querySelector('form');
+
+// Validate PG CGPA input on input event
+cgpaInput.addEventListener('input', function() {
+    const value = parseFloat(cgpaInput.value);
+    if (isNaN(value) || value < 0 || value > 10) {
+        cgpaError.style.display = 'block';
+    } else {
+        cgpaError.style.display = 'none';
+    }
+});
+
+// Validate UG CGPA input on input event
+ugCgpaInput.addEventListener('input', function() {
+    const value = parseFloat(ugCgpaInput.value);
+    if (isNaN(value) || value < 0 || value > 10) {
+        ugCgpaError.style.display = 'block';
+    } else {
+        ugCgpaError.style.display = 'none';
+    }
+});
+
+// Validate both inputs on form submission
+form.addEventListener('submit', function(event) {
+    const pgValue = parseFloat(cgpaInput.value);
+    const ugValue = parseFloat(ugCgpaInput.value);
+    let valid = true;
+
+    if (isNaN(pgValue) || pgValue < 0 || pgValue > 10) {
+        cgpaError.style.display = 'block';
+        valid = false;
+    }
+
+    if (isNaN(ugValue) || ugValue < 0 || ugValue > 10) {
+        ugCgpaError.style.display = 'block';
+        valid = false;
+    }
+
+    if (!valid) {
+        event.preventDefault();
+        alert('Please correct the CGPA values before submitting.');
+    }
+});
+
 </script>
 
 {% endblock %}
