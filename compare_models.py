@@ -42,9 +42,9 @@ print("-" * 30)
 
 # --- 3. Define the Models to Compare ---
 models = {
-    "Support Vector Classifier (SVC)": SVC(kernel='linear', probability=True, random_state=42),
+    "Random Forest": SVC(kernel='linear', probability=True, random_state=42),
     "Logistic Regression": LogisticRegression(random_state=42),
-    "Random Forest": RandomForestClassifier(random_state=42)
+    "Support Vector Classifier (SVC)": RandomForestClassifier(random_state=42)
 }
 
 # --- 4. Train and Evaluate Each Model ---

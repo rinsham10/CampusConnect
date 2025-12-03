@@ -71,19 +71,32 @@
                     <p id="ug-cgpa-error" style="color: red; display: none; margin-top: 5px;">UG CGPA must be between 0.00 and 10.00.</p>
                 </div>
                 
-                <div class="col-md-6">
+                
+
+            <div class="col-md-6">
+                <label for="communication_skills" class="form-label">
+                <b>Communication Skills (Rate 1–10):</b>
+                </label>
+
+                <input type="number" name="communication_skills"
+                class="form-control" min="1" max="10"
+                placeholder="e.g., 7" required
+                value="{{ user_inputs.communication_skills }}">
+
+            <!-- Link to open full guide -->
+                <small class="text-primary" style="cursor:pointer"
+                data-bs-toggle="modal" data-bs-target="#commGuideModal">
+                Rating Guide ⓘ
+                </small>
+            </div>
+
+            <div class="col-md-6">
                     <label for="internship_experience" class="form-label"><b>Do you have Internship Experience?</b></label>
                     <!-- MODIFIED: Added logic to select the correct option -->
                     <select name="internship_experience" class="form-select" required>
                         <option value="No" {% if user_inputs.internship_experience == 'No' %}selected{% endif %}>No</option>
                         <option value="Yes" {% if user_inputs.internship_experience == 'Yes' %}selected{% endif %}>Yes</option>
                     </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label for="communication_skills" class="form-label"><b>Communication Skills (Rate 1-10):</b></label>
-                    <!-- MODIFIED: Added value="{{ user_inputs.communication_skills }}" -->
-                    <input type="number" name="communication_skills" class="form-control" min="1" max="10" placeholder="e.g., 7" required value="{{ user_inputs.communication_skills }}">
                 </div>
 
                 <div class="col-12">
@@ -172,5 +185,31 @@ form.addEventListener('submit', function(event) {
 });
 
 </script>
+
+
+<!-- Communication rating guide modal -->
+<div class="modal fade" id="commGuideModal" tabindex="-1" aria-labelledby="commGuideLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commGuideLabel">Communication Rating Guide (1–10)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body small">
+        <p><b>1:</b> <b>Cannot speak in English at all;</b> unable to answer even very simple questions.</p>
+        <p><b>2:</b> <b>Very poor;</b> can say a few words but cannot make full sentences or maintain a basic conversation.</p>
+        <p><b>3:</b> <b>Poor;</b> can answer simple questions with single words or short phrases, but others struggle to understand.</p>
+        <p><b>4:</b> <b>Below average;</b> can speak in simple sentences about familiar topics but with many pauses and grammar mistakes.</p>
+        <p><b>5:</b> <b>Average;</b> can explain basic ideas (like course, hometown, hobbies) but sometimes gets stuck or needs to repeat.</p>
+        <p><b>6:</b> <b>Fair;</b> can describe projects and experiences in simple, clear language, but fluency and vocabulary are limited.</p>
+        <p><b>7:</b> <b>Good;</b> usually speaks clearly and in complete sentences, maintains eye contact, and can handle common interview questions.</p>
+        <p><b>8:</b> <b>Very good;</b> speaks confidently with good grammar and vocabulary, organizes answers well, and adapts to the listener.</p>
+        <p><b>9:</b> <b>Excellent;</b> fluent, clear, and engaging speaker who can explain complex topics and respond to unexpected questions smoothly.</p>
+        <p><b>10:</b> <b>Outstanding;</b> near‑professional level of communication, leads discussions or presentations with strong impact and almost no noticeable errors.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}
