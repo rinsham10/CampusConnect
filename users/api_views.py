@@ -4,11 +4,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import joblib
 import pandas as pd
 import os
-from .serializers import RegisterSerializer, PredictionInputSerializer
+from .serializers import ApplicationSerializer, JobDetailSerializer, RegisterSerializer, PredictionInputSerializer, JobSerializer
+from .models import Job
 
 class RegisterAPI(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -70,3 +72,21 @@ class PredictAPI(APIView):
                 "message": f"You have a {prob_placed:.0%} chance of placement."
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# --- 4. Job Listings API (Bonus) ---
+class JobListAPI(generics.ListAPIView):
+    queryset = Job.objects.all().order_by('-created_at')
+    serializer_class = JobSerializer
+
+class JobDetailAPI(generics.RetrieveAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobDetailSerializer
+
+class ApplyJobAPI(generics.CreateAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+    

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Profile, Job 
+from .models import CustomUser, Profile, Job, StudentApplication 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +39,37 @@ class PredictionInputSerializer(serializers.Serializer):
     communication_skills = serializers.IntegerField(min_value=1, max_value=10)
     projects_completed = serializers.IntegerField(min_value=0)
 
+
+class JobSerializer(serializers.ModelSerializer):
+    skills = serializers.SerializerMethodField()
+    class Meta:
+        model = Job
+        fields = ['id', 'title', 'company', 'location', 'job_type', 'salary_min', 'salary_max', 'deadline', 'skills']
+       
+
+    def get_skills(self, obj):
+        return obj.get_skills_as_list()
+
+class JobDetailSerializer(serializers.ModelSerializer):
+    skills = serializers.SerializerMethodField()
+    class Meta:
+        model = Job
+        fields = '__all__' 
+    def get_skills(self, obj):
+        return obj.get_skills_as_list()
+    
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentApplication
+        fields = ['job', 'resume']
+
+    def validate(self, data):
+        user = self.context['request'].user
+        job = data['job']
+        if user.is_anonymous:
+            raise serializers.ValidationError("You must be logged in.")
+
+        if StudentApplication.objects.filter(student=user, job=data['job']).exists():
+            raise serializers.ValidationError("You have already applied for this job.")
+        return data

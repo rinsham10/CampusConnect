@@ -18,7 +18,4 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('profile/edit/', views.profile_edit_view, name='profile-edit'),
     path('profile/education/edit/', views.education_edit_view, name='education-edit'),
-    path('api/register/', api_views.RegisterAPI.as_view(), name='api_register'),
-    path('api/login/', api_views.LoginAPI.as_view(), name='api_login'),
-    path('api/predict/', api_views.PredictAPI.as_view(), name='api_predict'),
 ]
