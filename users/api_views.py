@@ -9,8 +9,8 @@ from django.conf import settings
 import joblib
 import pandas as pd
 import os
-from .serializers import ApplicationSerializer, JobDetailSerializer, RegisterSerializer, PredictionInputSerializer, JobSerializer
-from .models import Job
+from .serializers import ApplicationSerializer, JobDetailSerializer, ProfileSerializer, RegisterSerializer, PredictionInputSerializer, JobSerializer
+from .models import Job, StudentApplication
 
 class RegisterAPI(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -89,4 +89,19 @@ class ApplyJobAPI(generics.CreateAPIView):
     
     def perform_create(self, serializer):
         serializer.save(student=self.request.user)
+    
+class MyApplicationsAPI(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return StudentApplication.objects.filter(student=self.request.user).order_by('-applied_date')
+    
+
+class UserProfileAPI(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
     

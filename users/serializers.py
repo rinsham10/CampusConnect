@@ -73,3 +73,20 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if StudentApplication.objects.filter(student=user, job=data['job']).exists():
             raise serializers.ValidationError("You have already applied for this job.")
         return data
+    
+class AppicationHistorySerializer(serializers.ModelSerializer):
+    job = JobSerializer()
+    class Meta:
+        model = StudentApplication
+        fields = ['id', 'job', 'applied_date', 'status']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = [
+            'username', 'profile_completion', 'phone_number', 
+            'linkedin_url', 'github_url', 'portfolio_url', 'address'
+        ]
+        read_only_fields = ['profile_completion']

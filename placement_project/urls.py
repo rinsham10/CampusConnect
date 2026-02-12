@@ -17,6 +17,8 @@ urlpatterns = [
     path('api/jobs/', api_views.JobListAPI.as_view(), name='api_job_list'),
     path('api/jobs/apply/', api_views.ApplyJobAPI.as_view(), name='api_apply'),
     path('api/jobs/<int:pk>/', api_views.JobDetailAPI.as_view(), name='api_job_detail'),
+    path('api/my-applications/', api_views.MyApplicationsAPI.as_view(), name='api_my_apps'),
+    path('api/profile/', api_views.UserProfileAPI.as_view(), name='api_profile'),
 ]
 
 # ✅ Serve media files in development mode
