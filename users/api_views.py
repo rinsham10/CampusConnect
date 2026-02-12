@@ -5,6 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import joblib
@@ -45,6 +46,11 @@ class LoginAPI(ObtainAuthToken):
 
 # --- 3. Prediction API (The Upgrade) ---
 class PredictAPI(APIView):
+    @extend_schema( 
+        request=PredictionInputSerializer,
+        responses={200: {"example": {"probability_placed": 85.0, "status": "High Chance"}}},
+        description="Submit student stats to get a placement probability prediction."
+    )
     def post(self, request):
         serializer = PredictionInputSerializer(data=request.data)
         if serializer.is_valid():

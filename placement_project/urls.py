@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 from users import api_views  # 👈 this is needed
 
@@ -28,6 +29,9 @@ urlpatterns = [
     path('api/notifications/', api_views.NotificationListAPI.as_view()),
     path('api/logout/', api_views.LogoutAPI.as_view()),
     path('api/', include(router.urls)),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),  # 1. The Schema (The raw data describing your API)
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),# 2. Swagger UI 
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),# 3. Redoc (An alternative, cleaner documentation style)
 ]
 
 # ✅ Serve media files in development mode
