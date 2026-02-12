@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'predictor',
     'users',
+    'rest_framework',
 ]
 
 # Tell Django to use your custom user model
