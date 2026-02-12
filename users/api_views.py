@@ -1,16 +1,18 @@
 # users/api_views.py
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import joblib
+from users import api_views
 import pandas as pd
 import os
-from .serializers import ApplicationSerializer, JobDetailSerializer, ProfileSerializer, RegisterSerializer, PredictionInputSerializer, JobSerializer
-from .models import Job, StudentApplication
+from .serializers import ApplicationSerializer, JobDetailSerializer, NotificationSerializer, ProfileSerializer, RegisterSerializer, PredictionInputSerializer, JobSerializer, ResumeSerializer
+from .models import Job, Notification, Profile, Resume, StudentApplication
 
 class RegisterAPI(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -105,3 +107,33 @@ class UserProfileAPI(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user.profile
     
+class ResumeUploadAPI(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
+    
+class ResumeViewSet(viewsets.ModelViewSet):
+    serializer_class = ResumeSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_queryset(self):
+        return Resume.objects.filter(student=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+
+class NotificationListAPI(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user, is_read=False)
+
+class LogoutAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.user.auth_token.delete()  # Invalidate the token
+        return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)

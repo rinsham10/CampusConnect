@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Profile, Job, StudentApplication 
+from .models import CustomUser, Notification, Profile, Job, Resume, StudentApplication 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,3 +90,15 @@ class ProfileSerializer(serializers.ModelSerializer):
             'linkedin_url', 'github_url', 'portfolio_url', 'address'
         ]
         read_only_fields = ['profile_completion']
+
+class ResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resume
+        fields = ['id', 'file', 'uploaded_at']
+        read_only_fields = ['uploaded_at']
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'message', 'created_at']
+        read_only_fields = ['created_at']

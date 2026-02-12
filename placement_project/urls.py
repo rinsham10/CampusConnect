@@ -1,10 +1,16 @@
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 
 from users import api_views  # 👈 this is needed
+
+router = DefaultRouter()
+
+router.register(r'resumes', api_views.ResumeViewSet, basename='resume')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,6 +25,9 @@ urlpatterns = [
     path('api/jobs/<int:pk>/', api_views.JobDetailAPI.as_view(), name='api_job_detail'),
     path('api/my-applications/', api_views.MyApplicationsAPI.as_view(), name='api_my_apps'),
     path('api/profile/', api_views.UserProfileAPI.as_view(), name='api_profile'),
+    path('api/notifications/', api_views.NotificationListAPI.as_view()),
+    path('api/logout/', api_views.LogoutAPI.as_view()),
+    path('api/', include(router.urls)),
 ]
 
 # ✅ Serve media files in development mode
