@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import joblib
@@ -86,6 +88,10 @@ class PredictAPI(APIView):
 class JobListAPI(generics.ListAPIView):
     queryset = Job.objects.all().order_by('-created_at')
     serializer_class = JobSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['location', 'job_type']
+    search_fields = ['title', 'company', 'description']
+    ordering_fields = ['salary_min', 'created_at']
 
 class JobDetailAPI(generics.RetrieveAPIView):
     queryset = Job.objects.all()
